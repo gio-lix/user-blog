@@ -1,0 +1,62 @@
+@import "src/styles/variables";
+.search {
+  position: relative;
+
+  > input {
+    border: none;
+    outline: none;
+    width: 300px;
+    border-bottom: 1.4px solid $gray-light-400;
+    padding-left: 20px;
+    padding-right: 18px;
+    padding-bottom: 5px;
+  }
+
+  > div {
+    position: absolute;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    height: 10px;
+    padding: 0 2px;
+    left: 50%;
+    bottom: -4px;
+    z-index: 2;
+    transform: translateX(-50%);
+    font-size: $font-md-12;
+    color: $gray-light-500;
+    background-color: $bg-white;
+
+    > span {
+      display: flex;
+      align-items: center;
+    }
+
+  }
+
+  .close {
+    font-size: 27px;
+    top: -5px;
+    right: 5px;
+    cursor: pointer;
+    color: $gray-light-500;
+    font-weight: 600;
+
+    &:hover {
+      color: $gray-light-900;
+    }
+  }
+
+  .user {
+    position: absolute;
+    top: 50px;
+
+    a {
+      text-decoration: none;
+      color: $gray-light-600;
+    }
+  }
+
+}

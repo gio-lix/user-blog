@@ -1,0 +1,36 @@
+@import "reset";
+@import "variables";
+@import "components/all";
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  background-color: $bg-white;
+}
+
+.main-container {
+  max-width: 1000px;
+  width: 100%;
+  margin: auto;
+}
+
+.notFound {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  > h1 {
+    font-size: $font-xl-40;
+    font-weight: 600;
+    color: $gray-light-500;
+  }
+}
+
+

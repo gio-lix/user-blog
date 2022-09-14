@@ -1,0 +1,94 @@
+@import "src/styles/variables";
+
+.menu {
+  height: 100%;
+
+  > ul {
+    display: flex;
+    height: 100%;
+
+    > li {
+      display: flex;
+      min-width: 60px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+      color: $gray-light-500;
+
+      .homo {
+        font-weight: 600;
+        font-size: 15px;
+      }
+    }
+
+    .icons {
+      font-size: 24px;
+      color: $gray-light-500;
+      &:hover {
+        color: $gray-light-900;
+      }
+    }
+
+    .active {
+      color: black;
+    }
+  }
+}
+
+
+.drop {
+  position: relative;
+  width: 100px;
+
+  > img {
+    width: 30px;
+  }
+
+  > span {
+    margin-left: 6px;
+    transition: all 200ms ease;
+  }
+
+  &:hover {
+    .down {
+      visibility: visible;
+    }
+
+    .rotateActive {
+      transform: rotate(90deg);
+
+    }
+  }
+
+  .down {
+    visibility: hidden;
+    position: absolute;
+    top: 57px;
+    right: -30px;
+    width: 150px;
+    height: auto;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    background: $bg-white;
+    box-shadow: 12px 8px 34px -17px rgba(173, 168, 173, 1);
+
+
+    > a {
+      text-decoration: none;
+      color: $gray-light-500;
+      padding: 10px 0;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(247, 247, 247, 1);
+        color: $gray-light-700;
+      }
+    }
+
+    > a:last-child {
+      border-top: 1px solid gray;
+    }
+  }
+
+}
