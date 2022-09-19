@@ -11,12 +11,14 @@ export interface UserState {
     address: string
     avatar: string
     email: string
-    followers: []
-    following: []
+    followers: string[]
+    following: string[]
     gender: string
     mobile: string
     username: string
+    fullname: string
     website: string
+    story: string
 }
 
 

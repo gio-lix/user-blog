@@ -1,18 +1,16 @@
 import React from 'react';
-import NotFound from "../components/NotFound";
 import {useParams} from "react-router-dom";
 import {RootState, useAppSelector} from "../redux/store";
+import SpinnerLoading from "../components/notify/spinnerLoading";
 
 
 const generatePage = (pageName: string) => {
     const component = () => require(`../pages/${pageName}`).default
 
-
-
     try {
         return React.createElement(component())
     } catch (err) {
-        return <NotFound />
+        return <SpinnerLoading />
     }
 }
 
@@ -29,7 +27,6 @@ const PageRender = () => {
             pageName = `${page}`
         }
     }
-
 
     return generatePage(pageName)
 }

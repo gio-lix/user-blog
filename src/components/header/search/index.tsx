@@ -6,16 +6,19 @@ import axios from "axios";
 import {UserState} from "../../../typing";
 import {NavLink} from "react-router-dom";
 import UserCard from "../../userCard";
+import {IMAGES} from "../../../images";
 
 const Search = () => {
     const {token} = useAppSelector((state: RootState) => state.auth)
     const usersRef = useRef<HTMLDivElement | null>(null)
     const [search, setSearch] = useState<string>()
     const [users, setUsers] = useState<UserState[]>([])
+    const [load, setLoad] = useState(false)
 
 
     useEffect(() => {
         (async () => {
+            setLoad(true)
             try {
                 if (search) {
                     const {data} = await axios.get(`/api/search?username=${search}`, {
@@ -24,9 +27,12 @@ const Search = () => {
                         }
                     })
                     setUsers(data.users)
+                    setLoad(false)
                 }
             } catch (err) {
                 console.log("err - ", err)
+            } finally {
+                setLoad(false)
             }
         })()
     }, [search, token])
@@ -46,6 +52,8 @@ const Search = () => {
         window.addEventListener("click", handleClick)
         return () => window.removeEventListener("click", handleClick)
     })
+
+
     return (
         <form className={s.search}>
             <input
@@ -54,13 +62,18 @@ const Search = () => {
                 onChange={(e) =>
                     setSearch(e.target.value.toLowerCase().replace(/ /g, ""))}
             />
+
             <div className={s.icon}>
                 <span>
                     <BiSearch/>
                 </span>
                 <p>Search</p>
             </div>
-            <div onClick={handleClose} className={s.close}>&times;</div>
+            {load ? (
+                <img className={s.spinner} src={IMAGES.spinner} alt="spiner"/>
+            ) : (
+                <div onClick={handleClose} className={s.close}>&times;</div>
+            )}
 
 
             <div ref={usersRef} className={s.user}>

@@ -1,0 +1,18 @@
+.root {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  width: 140px;
+  height: 40px;
+  border: #a9dffd 1.5px solid;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: #a9dffd;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #a9dffd;
+    color: white;
+  }
+}

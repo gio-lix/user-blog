@@ -2,10 +2,9 @@ import React, {SyntheticEvent, useState} from 'react';
 import clsx from "clsx";
 import FormBox from "../../components/FormBox";
 import {Link} from "react-router-dom";
-import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
+import {useAppDispatch} from "../../redux/store";
 import {postDataApi} from "../../redux/slices/authSlices";
 import {IMAGES} from "../../images";
-import {useNavigate} from "react-router-dom"
 
 
 

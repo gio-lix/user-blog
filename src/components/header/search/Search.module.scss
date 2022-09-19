@@ -34,8 +34,14 @@
       align-items: center;
     }
 
-  }
 
+  }
+  .spinner {
+    position: absolute;
+    top: -1.5px;
+    width: 25px;
+    right: 1px!important;
+  }
   .close {
     font-size: 27px;
     top: -5px;
@@ -51,7 +57,10 @@
 
   .user {
     position: absolute;
+    z-index: 12;
     top: 50px;
+    max-height: 500px;
+    overflow-y: auto;
 
     a {
       text-decoration: none;
