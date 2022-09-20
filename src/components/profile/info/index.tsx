@@ -6,6 +6,10 @@ import {postProfileDataApi} from "../../../redux/slices/authSlices";
 import EditProfile from "../editProfile";
 import clsx from "clsx";
 import FollowBtn from "../followBtn";
+import Followers from "../followers";
+import axios from "axios";
+import Following from "../following";
+import {log} from "util";
 
 const Info = () => {
     const {id} = useParams()
@@ -15,6 +19,7 @@ const Info = () => {
     const [onEdit, setOnEdit] = useState(false)
     const [showFollowers, setShowFollowers] = useState(false)
     const [showFollowing, setShowFollowing] = useState(false)
+
 
 
     useEffect(() => {
@@ -31,60 +36,73 @@ const Info = () => {
     }, [])
 
 
+    const [currentUser, setCurrentUser] = useState<any>()
+    useEffect(() => {
+        (async () => {
+            try {
+                const {data} = await axios.get(`/api/user/${id}`, {
+                    headers: {
+                        'Authorization': `${token}`
+                    }
+                })
+                setCurrentUser(data.user)
+            } catch (err) {
 
-
+            }
+        })()
+    },[id])
 
 
     return (
         <main className={clsx(s.user, onEdit && s.hover)}>
             <section className={s.grid}>
-                <img src={profile?.avatar} alt="user"/>
+                <img src={currentUser?.avatar} alt="user"/>
                 <div>
-                    <h3>{profile?.username}</h3>
+                    <h3>{currentUser?.username}</h3>
                     <div className={s.follow}>
-                        <span onClick={() => setShowFollowers(true)}>{profile?.followers.length} followers</span>
-                        <span onClick={() => setShowFollowing(true)}>{profile?.following.length} following</span>
+                        <span onClick={() => setShowFollowers(true)}>{profile?.followers?.length} followers</span>
+                        <span onClick={() => setShowFollowing(true)}>{profile?.following?.length} following</span>
                     </div>
-                    <h6 className={s.fullname}>{profile?.fullname}</h6>
-                    <address>{profile?.address}</address>
-                    <h6 className={s.email}>{profile?.email}</h6>
-                    <a className={s.website} href={profile?.website} target="_blank" rel="noreferrer">
-                        {profile?.website}
+                    <h6 className={s.fullname}>{currentUser?.fullname}</h6>
+                    <address>{currentUser?.address}</address>
+                    <h6 className={s.email}>{currentUser?.email}</h6>
+                    <a className={s.website} href={currentUser?.website} target="_blank" rel="noreferrer">
+                        {currentUser?.website}
                     </a>
-                    <p className={s.story}>{profile?.story}</p>
+                    <p className={s.story}>{currentUser?.story}</p>
                 </div>
 
 
                 <div ref={editRef}>
-                    {profile?._id === user?._id ? (
+                    {currentUser?._id === user?._id ? (
                         <button className={s.button} onClick={() => setOnEdit(true)}>Edit Profile</button>
                     ) : (
                         <FollowBtn user={profile!}/>
                     )}
-
                     {onEdit &&
                         <EditProfile
                             setOnEdit={setOnEdit}
                         />
                     }
-                    {/*{showFollowers && (*/}
-                    {/*    <Followers*/}
-                    {/*        user={profile?.followers}*/}
-                    {/*        setShowFollowers={setShowFollowers}*/}
-                    {/*    />*/}
-                    {/*)}*/}
-                    {/*{showFollowing && (*/}
-                    {/*    <Following*/}
-                    {/*        user={user!}*/}
-                    {/*        setShowFollowing={setShowFollowing}*/}
-                    {/*    />*/}
-                    {/*)}*/}
                 </div>
             </section>
             <div>
                 {/*<p>{profile?.story}</p>*/}
             </div>
-
+            {showFollowers && (
+                <Followers
+                    profile={profile!}
+                    showFollowers={showFollowers}
+                    setShowFollowers={setShowFollowers}
+                />
+            )}
+            {showFollowing && (
+                <Following
+                    profile={profile!}
+                    showFollowing={showFollowing}
+                    setShowFollowing={setShowFollowing}
+                />
+            )}
         </main>
 
     );
