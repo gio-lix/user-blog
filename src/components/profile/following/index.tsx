@@ -41,11 +41,11 @@ const Following:FC<Props> = ({setShowFollowing, profile,showFollowing}) => {
             <div>
                 <h1>Followers</h1>
                 <button onClick={() => setShowFollowing(false)}>&times;</button>
-                {currentUser.map((ele: UserState) => {
+                {currentUser.map((user: UserState) => {
                     return (
-                        <div onClick={() => handleLink(ele._id)}   key={ele._id}>
-                            <UserCard {...ele} className={s.className} >
-                                {auth?._id !== ele._id && <FollowBtn  user={ele} />}
+                        <div key={user._id}>
+                            <UserCard {...user} className={s.className} handleLink={handleLink}>
+                                {auth?._id !== user._id && <FollowBtn  user={user} />}
                             </UserCard>
                         </div>
                     )

@@ -3,6 +3,7 @@ import s from "./EditProfile.module.scss"
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import axios from "axios";
 import {postProfileDataApi} from "../../../redux/slices/authSlices";
+import {imageUpload} from "../../../utils/ImageUploaded";
 
 interface Props {
     setOnEdit: Function
@@ -39,29 +40,34 @@ const EditProfile: FC<Props> = ({setOnEdit}) => {
     }
 
 
+
     const handleChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        if (!e.target.files) {
-            return;
-        }
-
-        const formData = new FormData()
+        if (!e.target.files) return
         const file = e.target.files[0]
-        formData.append("file", file)
-        formData.append("upload_preset", 'qmfpawft')
-        formData.append("cloud_name", 'dlbipxxlr')
-
         setAvatar(file)
 
-        try {
-            const res = await fetch("https://api.cloudinary.com/v1_1/dlbipxxlr/image/upload", {
-                method: "POST",
-                body: formData
-            })
-            const data = await res.json()
-            setUploadImage(data.url)
-        } catch (err) {
-        }
+
+        const {success, error} = await imageUpload(file)
+
+        setUploadImage((success as any).url)
+
+        // const formData = new FormData()
+        //
+        // formData.append("file", file)
+        // formData.append("upload_preset", 'qmfpawft')
+        // formData.append("cloud_name", 'dlbipxxlr')
+        //
+        //
+        // try {
+        //     const res = await fetch("https://api.cloudinary.com/v1_1/dlbipxxlr/image/upload", {
+        //         method: "POST",
+        //         body: formData
+        //     })
+        //     const data = await res.json()
+        //     setUploadImage(data.url)
+        // } catch (err) {
+        // }
 
     };
 

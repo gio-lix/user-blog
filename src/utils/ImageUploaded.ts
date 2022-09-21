@@ -1,3 +1,27 @@
+export const imageUpload = async (images: any) => {
+    let error = ""
+    let success = ""
+
+    const formData = new FormData()
+    formData.append("file", images)
+    formData.append("upload_preset", 'qmfpawft')
+    formData.append("cloud_name", 'dlbipxxlr')
+
+    try {
+        const res = await fetch("https://api.cloudinary.com/v1_1/dlbipxxlr/image/upload", {
+            method: "POST",
+            body: formData
+        })
+        const data: any = await res.json()
+        success = data
+    } catch (err: any) {
+        error = err.message
+    }
+
+    return {error, success}
+}
+
+
 export const checkFileErr = (file: any) => {
     let err = ""
 

@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import axios from "axios";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {UserState, ValidState} from "../../typing";
 
 interface MessageProps extends ValidState {
@@ -29,8 +29,6 @@ export const postDataApi = createAsyncThunk<Object, any>(
             return thunkAPI.rejectWithValue(err)
         }
     })
-
-
 export const refreshDataApi = createAsyncThunk<any>(
     "auth/refreshDataApi",
     async (_, thunkAPI) => {
@@ -41,8 +39,6 @@ export const refreshDataApi = createAsyncThunk<any>(
             return thunkAPI.rejectWithValue(err)
         }
     })
-
-
 export const postRegisterDataApi = createAsyncThunk<Object, any>(
     "auth/postRegisterDataApi",
     async (params, thunkAPI) => {
@@ -53,8 +49,6 @@ export const postRegisterDataApi = createAsyncThunk<Object, any>(
             return thunkAPI.rejectWithValue(err)
         }
     })
-
-
 export const postProfileDataApi = createAsyncThunk<Object, any>(
     "auth/postProfileDataApi",
     async (params, thunkAPI) => {
@@ -88,6 +82,9 @@ const authSlice = createSlice({
         },
         setFollowers: (state: State, action: any) => {
             state.profile = action.payload
+        },
+        setFollowing: (state: State, action: any) => {
+            state.user = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -143,5 +140,5 @@ const authSlice = createSlice({
 });
 
 
-export const {setShow, setError, setFollowers} = authSlice.actions
+export const {setShow, setError, setFollowers, setFollowing} = authSlice.actions
 export const authReducer = authSlice.reducer

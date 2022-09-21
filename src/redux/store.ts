@@ -1,15 +1,14 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {authReducer} from "./slices/authSlices"
+import {postsReducer} from "./slices/postsSlice"
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    posts: postsReducer
 })
 
-const store = configureStore({
-    reducer: rootReducer,
-
-})
+const store = configureStore({reducer: rootReducer})
 
 export type RootState = ReturnType<typeof store.getState>
 export type AddDispatch = typeof store.dispatch

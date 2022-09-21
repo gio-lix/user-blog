@@ -2,7 +2,7 @@ import React, {FC, useEffect, useState} from 'react';
 import s from "./FollowBtn.module.scss"
 import {UserState} from "../../../typing";
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
-import {setFollowers} from "../../../redux/slices/authSlices";
+import {setFollowers, setFollowing} from "../../../redux/slices/authSlices";
 import axios from "axios";
 import {IMAGES} from "../../../images";
 
@@ -20,16 +20,18 @@ const FollowBtn:FC<Props> = ({user}) => {
 
 
     useEffect(() => {
-        if(auth?.following?.includes(user?._id as any)){
+        if(auth?.following?.includes(user?._id as string)){
             setFollow(true)
         }
         return () => setFollow(false)
-    },[user?._id,auth?.following])
+    },[user?._id, auth?.following])
 
 
 
     const handleFollow = async () => {
         let newUser = {...user, followers: [...user.followers, auth?._id]}
+        let newAuth = {...auth, following: [...(auth as any).following, newUser?._id]}
+
         setLoading(true)
         try {
             await axios.put(`/api/user/${user._id}/follow`, null, {
@@ -38,6 +40,7 @@ const FollowBtn:FC<Props> = ({user}) => {
                 }
             })
             dispatch(setFollowers(newUser))
+            dispatch(setFollowing(newAuth))
             setFollow(true)
             setLoading(false)
         } catch (err) {
@@ -48,8 +51,10 @@ const FollowBtn:FC<Props> = ({user}) => {
     }
 
     const handleUnfollow = async () => {
-        let newUser = {...user, following: [...user.following.filter((e:string) => e !== auth?._id)]}
+        let newUser = {...user, followers: [...user.followers.filter((e:string) => e !== auth?._id)]}
+        // let newAuth = {...auth, following: [...(auth as any).following.filter((e:string) => e !== user?._id)]}
         setLoading(true)
+
         try {
            await axios.put(`/api/user/${user?._id}/unfollow`, null, {
                 headers: {
@@ -63,7 +68,7 @@ const FollowBtn:FC<Props> = ({user}) => {
             console.log("err - ", err)
         } finally {
             setLoading(false)
-            
+
         }
     }
 

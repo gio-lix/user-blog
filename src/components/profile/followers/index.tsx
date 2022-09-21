@@ -20,20 +20,22 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
     const {user: auth, token} = useAppSelector((state: RootState) => state.auth)
     const [loading, setLoading] = useState(false)
 
-    console.log("profile - ", profile)
 
     const [currentUser, setCurrentUser] = useState<UserState[]>([])
     useEffect(() => {
-        setLoading(true)
         setCurrentUser([])
-        profile?.followers.forEach((e: string) => {
-            axios.get(`/api/user/${e}`, {
-                headers: {'Authorization': `${token}`}
+        if  (showFollowers) {
+            setLoading(true)
+            profile?.followers.forEach((e: string) => {
+                axios.get(`/api/user/${e}`, {
+                    headers: {'Authorization': `${token}`}
+                })
+                    .then(res => setCurrentUser((prev: any) => [...prev, res.data.user]))
+                    .catch(err => console.log(err))
+                    .finally(() =>  setLoading(false))
             })
-                .then(res => setCurrentUser((prev: any) => [...prev, res.data.user]))
-                .catch(err => console.log(err))
-                .finally(() =>  setLoading(false))
-        })
+        }
+
 
     }, [showFollowers])
 
@@ -50,17 +52,13 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
             <div>
                 <h1>Followers</h1>
                 <button onClick={() => setShowFollowers(false)}>&times;</button>
-                {loading ? (
+                {loading ? <img  className={s.spinner} src={IMAGES.spinner} alt="spinner"/> : (
                     <>
-                        <img  className={s.spinner} src={IMAGES.spinner} alt="spinner"/>
-                    </>
-                ) : (
-                    <>
-                        {currentUser.map((ele: UserState) => {
+                        {currentUser.map((user: UserState) => {
                             return (
-                                <div key={ele._id}>
-                                    <UserCard {...ele} className={s.className} handleLink={handleLink}>
-                                        {auth?._id !== ele._id && <FollowBtn user={ele}/>}
+                                <div key={user._id}>
+                                    <UserCard {...user} className={s.className} handleLink={handleLink}>
+                                        {auth?._id !== user._id && <FollowBtn user={user}/>}
                                     </UserCard>
                                 </div>
                             )
