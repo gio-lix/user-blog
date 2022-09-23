@@ -3,7 +3,7 @@
 
 .root {
   position: fixed;
-  top: 10px;
+  top: 60px;
   right: 10px;
   z-index: 12;
 
@@ -35,8 +35,10 @@
     background-color: $bg-white;
     box-shadow: 10px 10px 23px -9px rgba(0,0,0,0.12);
 
+
     > p {
       line-height: 150%;
     }
   }
 }
+

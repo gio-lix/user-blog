@@ -2,10 +2,12 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {authReducer} from "./slices/authSlices"
 import {postsReducer} from "./slices/postsSlice"
+import {notifyReducer} from "./slices/notifySlices"
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    posts: postsReducer
+    posts: postsReducer,
+    notify: notifyReducer
 })
 
 const store = configureStore({reducer: rootReducer})

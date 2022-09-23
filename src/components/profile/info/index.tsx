@@ -9,7 +9,6 @@ import FollowBtn from "../followBtn";
 import Followers from "../followers";
 import axios from "axios";
 import Following from "../following";
-import {log} from "util";
 
 const Info = () => {
     const {id} = useParams()
@@ -19,6 +18,10 @@ const Info = () => {
     const [onEdit, setOnEdit] = useState(false)
     const [showFollowers, setShowFollowers] = useState(false)
     const [showFollowing, setShowFollowing] = useState(false)
+
+    useEffect(() => {
+        console.log("profilexcxzc - ", user)
+    },[user])
 
 
 

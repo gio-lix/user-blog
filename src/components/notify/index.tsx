@@ -1,32 +1,34 @@
 import React from 'react';
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import Toast from "./toast";
-import {setShow} from "../../redux/slices/authSlices";
-import Loading from "./loading";
+import {setNotifyReset} from "../../redux/slices/notifySlices";
 
 const Notify = () => {
     const dispatch = useAppDispatch()
-    const {success,status,error} = useAppSelector((state: RootState) => state.auth)
+    const {notify} = useAppSelector((state: RootState) => state.notify)
+
+
+
 
     return (
         <div>
-            {(status !== "loading" && error ) &&
+            {(notify.error ) &&
                 <Toast
-                    message={{title: "Error", body: error}}
+                    message={{title: "Error", body: notify.error}}
                     bgColor={"#ce0101"}
-                    handleShow={() => dispatch(setShow())}
+                    handleShow={() => dispatch(setNotifyReset())}
                 />
             }
-            {(status !== "loading" && success ) &&
+            {(notify.success) &&
                 <Toast
-                    message={{title: "Success", body: success}}
+                    message={{title: "Success", body: notify.success}}
                     bgColor={"#ADFF2FFF"}
-                    handleShow={() => dispatch(setShow())}
+                    handleShow={() => dispatch(setNotifyReset())}
                 />
             }
-            {status === "loading" && (
-                <Loading />
-            )}
+            {/*{status === "loading" && (*/}
+            {/*    <Loading />*/}
+            {/*)}*/}
         </div>
     );
 };

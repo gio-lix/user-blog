@@ -1,6 +1,6 @@
 .modal {
-  position: absolute;
-  z-index: 5;
+  position: fixed;
+  z-index: 30;
 
 
   &::after {

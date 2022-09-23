@@ -7,7 +7,7 @@ const Header = () => {
 
     return (
         <header className={s.header}>
-            <p className={s.header_logo}>Logo</p>
+            <p onClick={() => window.scrollTo({top: 0})} className={s.header_logo}>Logo</p>
             <Search />
             <Menu />
         </header>

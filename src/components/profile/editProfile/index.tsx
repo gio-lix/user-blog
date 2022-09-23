@@ -52,23 +52,6 @@ const EditProfile: FC<Props> = ({setOnEdit}) => {
 
         setUploadImage((success as any).url)
 
-        // const formData = new FormData()
-        //
-        // formData.append("file", file)
-        // formData.append("upload_preset", 'qmfpawft')
-        // formData.append("cloud_name", 'dlbipxxlr')
-        //
-        //
-        // try {
-        //     const res = await fetch("https://api.cloudinary.com/v1_1/dlbipxxlr/image/upload", {
-        //         method: "POST",
-        //         body: formData
-        //     })
-        //     const data = await res.json()
-        //     setUploadImage(data.url)
-        // } catch (err) {
-        // }
-
     };
 
 
@@ -78,12 +61,13 @@ const EditProfile: FC<Props> = ({setOnEdit}) => {
         let user = {website, address,avatar : uploadImage, fullname, mobile, gender, story}
 
         try {
-            await axios.put(`/api/user`, user, {
+            const {data} = await axios.put(`/api/user`, user, {
                 headers: {
                     'Authorization': `${token}`
                 }
             })
             dispatch(postProfileDataApi({id: profile?._id, token}))
+            console.log("data - ", data)
         } catch (err) {
             console.log("err - ", err)
 
@@ -98,7 +82,10 @@ const EditProfile: FC<Props> = ({setOnEdit}) => {
             <form onSubmit={handleSubmit}>
                 <div className={s.images_group}>
                     <figure className={s.image}>
-                        <img src={avatar ? URL.createObjectURL(avatar) : profile?.avatar} alt=""/>
+                        <img
+                            src={avatar ? URL.createObjectURL(avatar) : profile?.avatar}
+                            alt="image"
+                        />
                         {/*<figcaption>Change</figcaption>*/}
                     </figure>
                     <label htmlFor="file" role="button">

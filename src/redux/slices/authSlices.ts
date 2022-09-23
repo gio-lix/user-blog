@@ -1,17 +1,11 @@
 import axios from "axios";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {UserState, ValidState} from "../../typing";
-
-interface MessageProps extends ValidState {
-    title: string
-}
+import {UserState} from "../../typing";
+import {setNotify} from "./notifySlices";
 
 
 const initialState = {
     status: "loaded",
-    error: null as MessageProps | null,
-    success: null,
-    notify: null,
     user: null as UserState | null,
     profile: null as UserState | null,
     token: null
@@ -19,14 +13,31 @@ const initialState = {
 type State = typeof initialState
 
 
+// export const updateUserApi = createAsyncThunk<Object, any>(
+//     "auth/updateUserApi",
+//     async (params, {dispatch}) => {
+//         const {token, user} = params
+//         try {
+//             const {data} = await axios.put(`/api/user`, {...user}, {
+//                 headers: {
+//                     'Authorization': `${token}`
+//                 }
+//             })
+//             return data
+//         } catch (err) {
+//             console.log("err - ", err)
+//         }
+//     })
+
 export const postDataApi = createAsyncThunk<Object, any>(
     "auth/fetchUserData",
-    async (params, thunkAPI) => {
+    async (params, {dispatch}) => {
         try {
             const {data} = await axios.post("/api/login", params)
+            dispatch(setNotify({success: [{msg: data.msg}]}))
             return data
         } catch (err) {
-            return thunkAPI.rejectWithValue(err)
+            return err
         }
     })
 export const refreshDataApi = createAsyncThunk<any>(
@@ -67,78 +78,75 @@ export const postProfileDataApi = createAsyncThunk<Object, any>(
     })
 
 
-
-
 const authSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        setShow: (state: State) => {
-            state.error = null
-            state.success = null
-        },
-        setError: (state: State, action: any) => {
-            state.error = action.payload
-        },
         setFollowers: (state: State, action: any) => {
             state.profile = action.payload
         },
         setFollowing: (state: State, action: any) => {
             state.user = action.payload
-        }
+        },
     },
     extraReducers: (builder) => {
-        builder.addCase(postDataApi.pending, (state: State) => {
-            state.status = "loading"
-        })
-        builder.addCase(postDataApi.fulfilled, (state: State, {payload}: any) => {
-            state.success = payload.msg
-            state.token = payload.access_token
-            state.user = payload.user
-            state.status = "loaded"
-        });
-        builder.addCase(postDataApi.rejected, (state: State, {payload}: any) => {
-            state.status = "loaded"
-            state.error = payload.response.data.msg
-        })
+        builder
+            .addCase(postDataApi.pending, (state: State) => {
+                state.status = "loading"
+            })
+            .addCase(postDataApi.fulfilled, (state: State, {payload}: any) => {
 
-        builder.addCase(refreshDataApi.fulfilled, (state: State, {payload}: any) => {
-            state.token = payload.access_token
-            state.user = payload.user
-        })
+                state.token = payload.access_token
+                state.user = payload.user
+                state.status = "loaded"
+            })
+            .addCase(postDataApi.rejected, (state: State, {payload}: any) => {
+                state.status = "loaded"
+            })
+
+            .addCase(refreshDataApi.fulfilled, (state: State, {payload}: any) => {
+                state.token = payload.access_token
+                state.user = payload.user
+            })
+
+            //   register
+            .addCase(postRegisterDataApi.pending, (state: State) => {
+                state.status = "loading"
+            })
+            .addCase(postRegisterDataApi.fulfilled, (state: State, {payload}: any) => {
+                state.token = payload.access_token
+                state.user = payload.user
+                state.status = "loaded"
+            })
+            .addCase(postRegisterDataApi.rejected, (state: State, {payload}: any) => {
+                state.status = "loaded"
+            })
+
+            //   profile
+            .addCase(postProfileDataApi.pending, (state: State) => {
+                state.status = "loading"
+            })
+            .addCase(postProfileDataApi.fulfilled, (state: State, {payload}: any) => {
+                state.profile = payload.user
+                state.status = "loaded"
+            })
+            .addCase(postProfileDataApi.rejected, (state: State, {payload}: any) => {
+                state.status = "loaded"
+            })
 
 
-        builder.addCase(postRegisterDataApi.pending, (state: State) => {
-            state.status = "loading"
-        })
-        builder.addCase(postRegisterDataApi.fulfilled, (state: State, {payload}: any) => {
-            state.success = payload.msg
-            state.token = payload.access_token
-            state.user = payload.user
-            state.status = "loaded"
-        });
-        builder.addCase(postRegisterDataApi.rejected, (state: State, {payload}: any) => {
-            state.status = "loaded"
-            state.error = payload.response.data.msg
-        })
-
-        //   profile
-        builder.addCase(postProfileDataApi.pending, (state: State) => {
-            state.status = "loading"
-        })
-        builder.addCase(postProfileDataApi.fulfilled, (state: State, {payload}: any) => {
-            state.profile = payload.user
-            state.status = "loaded"
-        });
-        builder.addCase(postProfileDataApi.rejected, (state: State, {payload}: any) => {
-            state.status = "loaded"
-            state.error = payload.response.data.msg
-        })
-
+            // profile update
+            // .addCase(updateUserApi.pending, (state: State) => {
+            //     state.status = "loading"
+            // })
+            // .addCase(updateUserApi.fulfilled, (state: State, {payload}: any) => {
+            //     state.status = "loaded"
+            //     state.user = payload.user
+            // })
 
     }
 });
 
 
-export const {setShow, setError, setFollowers, setFollowing} = authSlice.actions
+export const {setFollowers, setFollowing} = authSlice.actions
 export const authReducer = authSlice.reducer

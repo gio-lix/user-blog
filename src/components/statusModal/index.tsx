@@ -1,25 +1,27 @@
-import React, {FC, SyntheticEvent, useRef, useState} from 'react';
+import React, {FC, SyntheticEvent, useEffect, useRef, useState} from 'react';
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {MdOutlineMonochromePhotos, MdPhoto} from "react-icons/md"
 import {IoMdClose} from "react-icons/io"
 import s from "./StatusModal.module.scss"
-import {setError} from "../../redux/slices/authSlices";
 import {imageUpload} from "../../utils/ImageUploaded";
-import {createPosts} from "../../redux/slices/postsSlice";
+import {createPosts, setEdit, setModal, updatePosts} from "../../redux/slices/postsSlice";
+import {IMAGES} from "../../images";
+import Loading from "../notify/loading";
 
-interface Props {
-    setStatusTrue: Function
-}
 
-const StatusModal:FC<Props> = ({setStatusTrue}) => {
+
+const StatusModal = () => {
     const dispatch = useAppDispatch()
     const {user, token} = useAppSelector((state: RootState) => state.auth)
+    const {edit, status} = useAppSelector((state: RootState) => state.posts)
     const [content, setContent] = useState<string>("")
     const [images, setImages] = useState<any>([])
     const [stream, setStream] = useState(false)
     const [tracks, setTracks] = useState<any>()
     const useVideoRef = useRef<any>()
     const useCanvasRef = useRef<any>()
+
+
 
     const  handleChangeImage = (e: any) => {
         let err = ""
@@ -81,9 +83,7 @@ const StatusModal:FC<Props> = ({setStatusTrue}) => {
 
         let err = ""
         let media: string[] = []
-        if (images.length === 0) {
-            return dispatch(setError("Please add your photos"))
-        }
+
 
         for (let img of images) {
             if (img.camera) {
@@ -95,12 +95,31 @@ const StatusModal:FC<Props> = ({setStatusTrue}) => {
                 media.push((success as any).url)
                 err = error
             }
-
         }
-        if (media.length > 0) {
+
+        if (edit) {
+            dispatch(updatePosts({content,images: media, user,id: edit._id, token} ))
+        } else {
             dispatch(createPosts({content,images: media, user, token} ))
         }
 
+        setContent(" ")
+        setImages([])
+        dispatch(setModal(false))
+        if (tracks) tracks.stop()
+
+    }
+
+    useEffect(() => {
+        if (edit) {
+            setContent(edit.content)
+            setImages(edit.images)
+        }
+    },[edit])
+
+    const handleClose = () => {
+        dispatch(setModal(false))
+        dispatch(setEdit(null))
     }
 
     return (
@@ -108,7 +127,7 @@ const StatusModal:FC<Props> = ({setStatusTrue}) => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <h5>Create Posts</h5>
-                    <span role="button" onClick={() => setStatusTrue(false)}>&times;</span>
+                    <span role="button" onClick={handleClose}>&times;</span>
                 </div>
 
                 <div>
@@ -123,7 +142,10 @@ const StatusModal:FC<Props> = ({setStatusTrue}) => {
                         {images.map((img: any, index: number) => {
                             return (
                                 <div key={index}>
-                                    <img  src={img.camera ? img.camera : URL.createObjectURL(img)} alt=""/>
+                                    <img  src={img.camera
+                                            ? img.camera
+                                            : typeof img === "object" ? URL.createObjectURL(img) : img
+                                    } alt=""/>
                                     <span role="button" onClick={() => deleteImage(index)}>
                                         <IoMdClose />
                                     </span>

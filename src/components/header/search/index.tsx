@@ -12,6 +12,7 @@ const Search = () => {
     const {token} = useAppSelector((state: RootState) => state.auth)
     const usersRef = useRef<HTMLDivElement | null>(null)
     const [search, setSearch] = useState<string>()
+    const [focus, setFocus] = useState(false)
     const [users, setUsers] = useState<UserState[]>([])
     const [load, setLoad] = useState(false)
 
@@ -53,12 +54,20 @@ const Search = () => {
         return () => window.removeEventListener("click", handleClick)
     })
 
+    const handleBlur = () => {
+        setTimeout(() => {
+            setFocus(false)
+        },200)
+    }
+
 
     return (
         <form className={s.search}>
             <input
                 type="text"
                 value={search || ""}
+                onFocus={() => setFocus(true)}
+                onBlur={handleBlur}
                 onChange={(e) =>
                     setSearch(e.target.value.toLowerCase().replace(/ /g, ""))}
             />
@@ -72,7 +81,11 @@ const Search = () => {
             {load ? (
                 <img className={s.spinner} src={IMAGES.spinner} alt="spiner"/>
             ) : (
-                <div onClick={handleClose} className={s.close}>&times;</div>
+                <>
+                    {focus && (
+                        <div onClick={handleClose} className={s.close}>&times;</div>
+                    )}
+                </>
             )}
 
 

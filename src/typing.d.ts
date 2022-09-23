@@ -21,5 +21,23 @@ export interface UserState {
     story: string
 }
 
+export interface PostsState {
+    _id: string
+    comments: [],
+    content: string,
+    images: string[]
+    likes: string[],
+    createdAt: Date
+    user: {
+        _id: string
+        avatar: string
+        fullname: string
+        username: string
+    }
+}
+
+
+
+
 
 

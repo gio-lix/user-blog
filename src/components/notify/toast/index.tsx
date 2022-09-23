@@ -1,38 +1,42 @@
 import React, {FC, useEffect} from 'react';
 import s from "./Toast.module.scss"
-import {ValidState} from "../../../typing";
 
-interface MessageProps {
-    title: string,
-    body: ValidState
-}
 
 interface Props {
-    message?: MessageProps
+    message?: any
     handleShow?: () => void
     bgColor?: string
 }
 
 const Toast: FC<Props> = ({handleShow, message, bgColor}) => {
 
+    const fun = () => {
+        if (message.body.length > 0) {
+            let values = message.body?.map((e: any) => e)
+            return values[0]
+        }
+    }
+
+
+
+
     return (
-            <section className={s.root}>
+        <section className={s.root}>
+            {message.body.length !== 0 && (
                 <div style={{backgroundColor: bgColor}}>
                     <strong>{message?.title}</strong>
                     <button onClick={handleShow}>&times;</button>
                 </div>
-                {message?.title.toLowerCase() === "error" ? Object.values(message?.body as ValidState)?.map((item: any,index: number) => {
-                    return (
-                       <div key={index} style={{backgroundColor: bgColor}}>
-                          <p>{item}</p>
-                       </div>
-                    )
-                }) : (
-                    <div style={{backgroundColor: bgColor}}>
-                        <p>{(message as any)?.body}</p>
+            )}
+
+            {!!fun()  &&  Object.values(fun())?.map((item: any, index: number) => {
+                return (
+                    <div  key={index} style={{backgroundColor: bgColor}}>
+                        <p >{item}</p>
                     </div>
-                )}
-            </section>
+                )
+            })}
+        </section>
     );
 };
 
