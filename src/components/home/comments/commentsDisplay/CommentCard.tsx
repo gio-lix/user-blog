@@ -202,7 +202,7 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
                     </InputComments>
                 }
             </div>
-            <div className={s.comment_content_children}>
+            <div>
                 {children}
             </div>
         </section>

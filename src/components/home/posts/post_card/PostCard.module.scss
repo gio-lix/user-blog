@@ -19,12 +19,11 @@
     align-items: center;
 
     a {
-      text-decoration: none;
       color: $bg-gray-light-900;
     }
 
     small {
-      font-size: 11px;
+      font-size: $font-md-11;
       color: $bg-gray-light-600;
     }
   }
@@ -49,9 +48,9 @@
           display: flex;
           align-items: center;
           padding: 0 5px 4px 5px;
-          border: 1px solid $gray-light-400;
-          background-color: white;
           box-shadow: 19px 18px 19px -16px rgba(166, 166, 166, 1);
+          border: 1px solid $gray-light-400;
+          background-color: $bg-white;
           color: $bg-gray-light-600;
         }
       }
@@ -188,10 +187,10 @@
         position: absolute;
         z-index: 20;
         left: 50%;
-        transform: translateX(-50%);
         bottom: 10px;
         font-size: $font-xl-30;
         color: $gray-light-500;
+        transform: translateX(-50%);
 
         > span {
           margin: 5px;
@@ -221,7 +220,7 @@
   > div:first-child {
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
+    font-size: $font-lg-20;
 
     .footer_icon {
       > span {

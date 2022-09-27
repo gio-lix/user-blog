@@ -2,9 +2,9 @@
 
 .root {
   position: relative;
-  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
+  margin-bottom: 15px;
 
 
   &:hover {
@@ -18,7 +18,6 @@
       display: inline-flex;
       align-items: center;
       margin-bottom: 10px;
-      text-decoration: none;
 
       > img {
         width: 20px;
@@ -35,7 +34,6 @@
 
 
   > div:not(:first-child) {
-
     padding: 0 20px;
   }
 
@@ -54,10 +52,10 @@
         border: none;
         resize: none;
         outline: none;
-        background: white;
         width: 100%;
         height: 100px;
         margin: 5px 0;
+        background: $bg-white;
       }
 
       > p:last-child {
@@ -67,7 +65,7 @@
 
       > p {
         line-height: 20px;
-        font-size: 14px;
+        font-size: $font-md-14;
         > span {
           white-space: nowrap;
         }
@@ -80,12 +78,12 @@
 
 
       .like_box {
+        display: flex;
+        align-items: center;
+
         position: absolute;
         bottom: 10px;
         right: 0;
-
-        display: flex;
-        align-items: center;
 
         > div:first-child {
           margin-right: 10px;
@@ -95,8 +93,6 @@
         .moreDots {
           width: 20px;
           margin-left: 5px;
-          //visibility: hidden;
-
         }
       }
 
@@ -110,10 +106,10 @@
 
       small:not(:first-child) {
         margin-left: 10px;
-        font-weight: 600;
         cursor: pointer;
-        color: $bg-black;
         opacity: .8;
+        color: $bg-black;
+        font-weight: 600;
 
         &:hover {
           opacity: 1;
@@ -122,24 +118,13 @@
     }
 
   }
-
-  .comment_content_like_box {
-
-    &_link {
-
-    }
-  }
-  .comment_content_children {
-
-  }
-
 }
 
 
 .readMore {
-  color: #487c98;
+  color: $blue-600;
 }
 
 .readLess {
-  color: red;
+  color: $red-500;
 }
