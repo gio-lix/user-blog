@@ -21,9 +21,21 @@ export interface UserState {
     story: string
 }
 
+export interface CommentState {
+    _id: string
+    postId: string
+    postUserId: string
+    content: string
+    createAt: Date
+    likes: UserState[]
+    user: UserState
+    tag: UserState
+}
+
+
 export interface PostsState {
     _id: string
-    comments: [],
+    comments: CommentState[],
     content: string,
     images: string[]
     likes: string[],

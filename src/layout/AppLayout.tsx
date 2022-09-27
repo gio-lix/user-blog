@@ -9,9 +9,6 @@ const AppLayout = () => {
     const {token} = useAppSelector((state: RootState) => state.auth)
 
 
-
-
-
     useEffect(() => {
         (async () => {
             try {

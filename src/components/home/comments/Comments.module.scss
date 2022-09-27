@@ -1,0 +1,110 @@
+@import "src/styles/variables";
+
+.comment {
+    > div {
+      display: inline-flex;
+      color: red;
+      margin-bottom: 10px;
+      padding-top: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+}
+
+.input_comment {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  &_onReply {
+    background-color: transparent!important;
+  }
+  a {
+    text-decoration: none;
+  }
+  > input {
+    width: 100%;
+    height: 100%;
+    padding-right: 70px;
+    padding-left: 10px;
+    background-color: #e1e1e1;
+    border: none;
+    outline: none;
+  }
+  > button {
+    position: absolute;
+    top: 25%;
+    right: 0;
+    border: none;
+    background: transparent;
+    width: 70px;
+    font-size: 16px;
+    font-weight: 500;
+    color: $bg-purple-500;
+    letter-spacing: 1px;
+    opacity: .8;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.comment_menu {
+  position: relative;
+
+  > div:first-child {
+    position: absolute;
+    bottom: -14px;
+    display:  flex;
+    align-items: center;
+    height: 30px;
+    width: 40px;
+
+    &:hover {
+      .dop_down {
+        visibility: visible!important;
+      }
+    }
+  }
+
+  span {
+    cursor: pointer;
+  }
+}
+
+
+
+.dop_down {
+  visibility: hidden;
+  position: absolute;
+  z-index: 30;
+  left: 10px;
+  top: 25px;
+  width: 100px;
+  height: auto;
+  background-color: white;
+  border: 1px solid #e7e7e7;
+  box-shadow: 19px 18px 19px -16px rgba(166, 166, 166, 1);
+
+  span {
+    padding: 8px 10px;
+    &:hover {
+      background-color: $bg-gray-light-200;
+    }
+  }
+}
+.menuItem {
+  display: flex;
+  flex-direction: column;
+
+  span {
+    padding: 8px 10px;
+    opacity: .7;
+    &:hover {
+      background-color: $bg-gray-light-200;
+      opacity: .7;
+    }
+  }
+}

@@ -2,11 +2,12 @@ import React, {FC, SyntheticEvent, useEffect, useState} from 'react';
 import s from "./EditProfile.module.scss"
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import axios from "axios";
-import {postProfileDataApi} from "../../../redux/slices/authSlices";
 import {imageUpload} from "../../../utils/ImageUploaded";
+import {setNotify} from "../../../redux/slices/notifySlices";
 
 interface Props {
     setOnEdit: Function
+    setCount: Function
 }
 
 const initialState = {
@@ -19,7 +20,7 @@ const initialState = {
 }
 type State = typeof initialState
 
-const EditProfile: FC<Props> = ({setOnEdit}) => {
+const EditProfile: FC<Props> = ({setOnEdit, setCount}) => {
     const dispatch = useAppDispatch()
     const [avatar, setAvatar] = useState<any>()
     const [uploadImage, setUploadImage] = useState<any>()
@@ -47,7 +48,6 @@ const EditProfile: FC<Props> = ({setOnEdit}) => {
         const file = e.target.files[0]
         setAvatar(file)
 
-
         const {success, error} = await imageUpload(file)
 
         setUploadImage((success as any).url)
@@ -60,17 +60,15 @@ const EditProfile: FC<Props> = ({setOnEdit}) => {
 
         let user = {website, address,avatar : uploadImage, fullname, mobile, gender, story}
 
+        setCount((prev: number) => prev + 1)
         try {
-            const {data} = await axios.put(`/api/user`, user, {
+            await axios.put(`/api/user`, user, {
                 headers: {
                     'Authorization': `${token}`
                 }
             })
-            dispatch(postProfileDataApi({id: profile?._id, token}))
-            console.log("data - ", data)
         } catch (err) {
-            console.log("err - ", err)
-
+            dispatch(setNotify({error: [(err as any).response.data]}))
         }
         setOnEdit(false)
     }

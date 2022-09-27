@@ -1,33 +1,26 @@
 import axios from "axios";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {UserState} from "../../typing";
 import {setNotify} from "./notifySlices";
+
 
 
 const initialState = {
     status: "loaded",
     user: null as UserState | null,
+    users: [] as any | [],
+    profilePosts: {
+        posts: [] as any | [],
+        result: 0,
+        page: 2,
+        _id: ""
+    },
     profile: null as UserState | null,
+    ids: [] as any | [],
     token: null
 }
 type State = typeof initialState
 
-
-// export const updateUserApi = createAsyncThunk<Object, any>(
-//     "auth/updateUserApi",
-//     async (params, {dispatch}) => {
-//         const {token, user} = params
-//         try {
-//             const {data} = await axios.put(`/api/user`, {...user}, {
-//                 headers: {
-//                     'Authorization': `${token}`
-//                 }
-//             })
-//             return data
-//         } catch (err) {
-//             console.log("err - ", err)
-//         }
-//     })
 
 export const postDataApi = createAsyncThunk<Object, any>(
     "auth/fetchUserData",
@@ -78,6 +71,24 @@ export const postProfileDataApi = createAsyncThunk<Object, any>(
     })
 
 
+export const postProfilePosts = createAsyncThunk<Object, any>(
+    "auth/postProfilePosts",
+    async (params, thunkAPI) => {
+        const {id, token} = params
+
+        try {
+            const {data} = await axios.get(`/api/user_post/${id}`, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            })
+            console.log(" redux-data - ", data)
+            return data
+        } catch (err) {
+            return thunkAPI.rejectWithValue(err)
+        }
+    })
+
 const authSlice = createSlice({
     name: "user",
     initialState,
@@ -88,6 +99,11 @@ const authSlice = createSlice({
         setFollowing: (state: State, action: any) => {
             state.user = action.payload
         },
+        setProfileUsers: (state: State, action: any) => {
+            state.ids.push(action.payload._id)
+            state.users.push(action.payload)
+        },
+
     },
     extraReducers: (builder) => {
         builder
@@ -135,18 +151,17 @@ const authSlice = createSlice({
             })
 
 
-            // profile update
-            // .addCase(updateUserApi.pending, (state: State) => {
-            //     state.status = "loading"
-            // })
-            // .addCase(updateUserApi.fulfilled, (state: State, {payload}: any) => {
-            //     state.status = "loaded"
-            //     state.user = payload.user
-            // })
-
+            .addCase(postProfilePosts.pending, (state: State) => {
+                state.status = "loading"
+            })
+            .addCase(postProfilePosts.fulfilled, (state: State, {payload}: any) => {
+                state.status = "loaded"
+                state.profilePosts.posts = payload.post
+                state.profilePosts.result = payload.result
+            })
     }
 });
 
 
-export const {setFollowers, setFollowing} = authSlice.actions
+export const {setFollowers, setFollowing,setProfileUsers} = authSlice.actions
 export const authReducer = authSlice.reducer

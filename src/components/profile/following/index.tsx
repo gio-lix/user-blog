@@ -25,7 +25,7 @@ const Following:FC<Props> = ({setShowFollowing, profile,showFollowing}) => {
             axios.get(`/api/user/${e}`, {
                 headers: {'Authorization': `${token}`}
             })
-                .then(res => setCurrentUser((prev: any) => [...prev, res.data.user]))
+                .then(res => setCurrentUser((prev: UserState[]) => [...prev, res.data.user]))
                 .catch(err => console.log(err))
         })
     }, [showFollowing])
@@ -44,7 +44,7 @@ const Following:FC<Props> = ({setShowFollowing, profile,showFollowing}) => {
                 {currentUser.map((user: UserState) => {
                     return (
                         <div key={user._id}>
-                            <UserCard {...user} className={s.className} handleLink={handleLink}>
+                            <UserCard {...user} className={s.className} handleLink={() => handleLink(user._id)}>
                                 {auth?._id !== user._id && <FollowBtn  user={user} />}
                             </UserCard>
                         </div>

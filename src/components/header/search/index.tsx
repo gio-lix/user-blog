@@ -14,7 +14,7 @@ const Search = () => {
     const [search, setSearch] = useState<string>()
     const [focus, setFocus] = useState(false)
     const [users, setUsers] = useState<UserState[]>([])
-    const [load, setLoad] = useState(false)
+    const [load, setLoad] = useState<boolean>(false)
 
 
     useEffect(() => {

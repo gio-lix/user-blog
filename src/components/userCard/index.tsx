@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 interface Props extends UserState{
     children?: React.ReactNode
-    handleLink?: any
+    handleLink?: React.MouseEventHandler<HTMLHeadingElement> | undefined
     className?: string
 }
 
@@ -15,7 +15,7 @@ const UserCard:FC<Props> = ({_id,username,avatar,children,handleLink,className})
         <section className={clsx(s.user, className ? className : "")}>
             <div>
                 <img className={s.img} src={avatar} alt="avatar"/>
-                <h2 onClick={() => handleLink(_id)}>{username}</h2>
+                <h2 onClick={handleLink}>{username}</h2>
             </div>
             <div>
                 {children}

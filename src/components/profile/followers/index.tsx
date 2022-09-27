@@ -57,7 +57,7 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
                         {currentUser.map((user: UserState) => {
                             return (
                                 <div key={user._id}>
-                                    <UserCard {...user} className={s.className} handleLink={handleLink}>
+                                    <UserCard {...user} className={s.className} handleLink={() => handleLink(user._id)}>
                                         {auth?._id !== user._id && <FollowBtn user={user}/>}
                                     </UserCard>
                                 </div>

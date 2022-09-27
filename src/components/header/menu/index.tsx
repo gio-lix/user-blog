@@ -31,7 +31,7 @@ const Menu = () => {
         }
     }
 
-    const isActive = (pn: any) => {
+    const isActive = (pn: string) => {
         if (pn === pathname ) return s.active
     }
     return (

@@ -12,8 +12,8 @@ import Loading from "../notify/loading";
 
 const StatusModal = () => {
     const dispatch = useAppDispatch()
-    const {user, token} = useAppSelector((state: RootState) => state.auth)
-    const {edit, status} = useAppSelector((state: RootState) => state.posts)
+    const {user, token, status} = useAppSelector((state: RootState) => state.auth)
+    const {edit} = useAppSelector((state: RootState) => state.posts)
     const [content, setContent] = useState<string>("")
     const [images, setImages] = useState<any>([])
     const [stream, setStream] = useState(false)
@@ -22,6 +22,7 @@ const StatusModal = () => {
     const useCanvasRef = useRef<any>()
 
 
+    console.log("status - - - > > > > > ", status)
 
     const  handleChangeImage = (e: any) => {
         let err = ""
@@ -41,7 +42,6 @@ const StatusModal = () => {
 
         setImages([...images, ...newImages])
     }
-
     const deleteImage = (index: number) => {
         const newArr = [...images]
         newArr.splice(index, 1)
@@ -54,13 +54,12 @@ const StatusModal = () => {
                 .then(mediaStream => {
                     useVideoRef.current.srcObject = mediaStream
                     useVideoRef.current.play()
-                    const track: any = mediaStream.getTracks()
+                    const track = mediaStream.getTracks()
                     setTracks(track[0])
                 })
                 .catch(err => console.log(err))
         }
     }
-
     const handleScreenCapture = () => {
         const width = useVideoRef.current.clientWidth
         const height = useVideoRef.current.clientHeight
@@ -72,7 +71,6 @@ const StatusModal = () => {
         let URL = useCanvasRef.current.toDataURL()
         setImages([...images, {camera: URL}])
     }
-
     const handleStreamStop = () => {
         tracks.stop()
         setStream(false)
@@ -100,7 +98,8 @@ const StatusModal = () => {
         if (edit) {
             dispatch(updatePosts({content,images: media, user,id: edit._id, token} ))
         } else {
-            dispatch(createPosts({content,images: media, user, token} ))
+            const lemon = await dispatch(createPosts({content,images: media, user, token} ))
+            console.log("lemon - ", lemon)
         }
 
         setContent(" ")

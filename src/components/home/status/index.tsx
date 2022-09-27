@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import s from "./Status.module.scss"
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import StatusModal from "../../statusModal";
@@ -8,8 +8,6 @@ const Status = () => {
     const dispatch = useAppDispatch()
     const {user} = useAppSelector((state: RootState) => state.auth)
     const {modal} = useAppSelector((state: RootState) => state.posts)
-
-
 
 
 

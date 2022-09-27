@@ -1,20 +1,25 @@
 import React, {useEffect} from 'react';
-import {Outlet, useNavigate} from "react-router-dom"
+import {Outlet, useParams} from "react-router-dom"
 import Header from "../components/header/header";
 import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
 import {getPosts} from "../redux/slices/postsSlice";
+import {postProfilePosts} from "../redux/slices/authSlices";
 
 
 const AuthLayout = () => {
     const dispatch = useAppDispatch()
-    const navigate = useNavigate()
+    const {id} = useParams()
     const {token} = useAppSelector((state: RootState) => state.auth)
 
     useEffect(() => {
         if (token) {
             dispatch(getPosts(token))
+            if (id) {
+                dispatch(postProfilePosts({id, token }))
+            }
         }
-    },[token])
+    },[token, id])
+
 
     return (
         <section className="main-container">

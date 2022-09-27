@@ -4,10 +4,11 @@ import Posts from "../../components/profile/posts";
 
 const Profile = () => {
 
+
     return (
         <section>
-            <Info/>
-            <Posts/>
+            <Info />
+            <Posts />
         </section>
     );
 };
