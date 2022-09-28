@@ -4,9 +4,10 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 
 const initialState = {
+    status: "loaded",
     notify: {
         success: [],
-        error: []
+        error: [],
     }
 }
 
@@ -20,10 +21,12 @@ const notifySlices = createSlice({
             const {success, error} = action.payload
             state.notify.success = success
             state.notify.error = error
+            state.status = "loaded"
         },
         setNotifyReset: (state:State) => {
             state.notify.success = []
             state.notify.error = []
+            state.status = "loaded"
         }
     }
 })

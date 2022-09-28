@@ -11,21 +11,19 @@ interface Props {
 }
 
 
-const FollowBtn:FC<Props> = ({user}) => {
+const FollowBtn: FC<Props> = ({user}) => {
     const dispatch = useAppDispatch()
     const [follow, setFollow] = useState<boolean>(false)
     const [loading, setLoading] = useState(false)
-    const {token,user: auth, profile} = useAppSelector((state: RootState) => state.auth)
-
+    const {token, user: auth} = useAppSelector((state: RootState) => state.auth)
 
 
     useEffect(() => {
-        if(auth?.following?.includes(user?._id as string)){
+        if (auth?.following?.includes(user?._id as string)) {
             setFollow(true)
         }
         return () => setFollow(false)
-    },[user?._id, auth?.following])
-
+    }, [user?._id, auth?.following])
 
 
     const handleFollow = async () => {
@@ -51,12 +49,11 @@ const FollowBtn:FC<Props> = ({user}) => {
     }
 
     const handleUnfollow = async () => {
-        let newUser = {...user, followers: [...user.followers.filter((e:string) => e !== auth?._id)]}
-        // let newAuth = {...auth, following: [...(auth as any).following.filter((e:string) => e !== user?._id)]}
+        let newUser = {...user, followers: [...user.followers.filter((e: string) => e !== auth?._id)]}
         setLoading(true)
 
         try {
-           await axios.put(`/api/user/${user?._id}/unfollow`, null, {
+            await axios.put(`/api/user/${user?._id}/unfollow`, null, {
                 headers: {
                     'Authorization': `${token}`
                 }

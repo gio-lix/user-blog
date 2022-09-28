@@ -82,7 +82,6 @@ export const postProfilePosts = createAsyncThunk<Object, any>(
                     'Authorization': `${token}`
                 }
             })
-            console.log(" redux-data - ", data)
             return data
         } catch (err) {
             return thunkAPI.rejectWithValue(err)

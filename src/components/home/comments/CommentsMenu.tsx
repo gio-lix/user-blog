@@ -16,17 +16,16 @@ interface Props {
 }
 
 
-const CommentsMenu:FC<Props> = ({comment,post,auth, setOnEdit}) => {
+const CommentsMenu: FC<Props> = ({comment, post, auth, setOnEdit}) => {
     const dispatch = useAppDispatch()
     const {token} = useAppSelector((state: RootState) => state.auth)
 
 
-
     const onHandleRemove = async () => {
         if (post.user._id === auth._id || comment.user._id === auth._id) {
-            dispatch(setCommentRemove({postId: post._id,  commentId: comment._id}))
+            dispatch(setCommentRemove({postId: post._id, commentId: comment._id}))
             try {
-                await axios.delete(`/api/comment/${comment._id}`,  {
+                await axios.delete(`/api/comment/${comment._id}`, {
                     headers: {
                         'Authorization': `${token}`
                     }
@@ -41,12 +40,12 @@ const CommentsMenu:FC<Props> = ({comment,post,auth, setOnEdit}) => {
 
     const MenuItem = () => {
         return (
-            <div className={s.menuItem} >
+            <div className={s.menuItem}>
                 <span onClick={() => setOnEdit(true)}>
-                    <GoPencil /> Edit
+                    <GoPencil/> Edit
                 </span>
                 <span onClick={onHandleRemove}>
-                    <AiFillDelete /> Remove
+                    <AiFillDelete/> Remove
                 </span>
             </div>
         )
@@ -58,17 +57,17 @@ const CommentsMenu:FC<Props> = ({comment,post,auth, setOnEdit}) => {
             {
                 (post.user._id === auth._id || comment.user._id === auth._id) &&
                 <div>
-                    <span  >
-                        <BsThreeDotsVertical />
+                    <span>
+                        <BsThreeDotsVertical/>
                     </span>
-                    <div  className={s.dop_down}>
+                    <div className={s.dop_down}>
                         {post.user._id === auth._id
                             ? comment.user._id === auth._id
                                 ? <>{MenuItem()}</>
                                 : (
-                                    <div className={s.menuItem} >
+                                    <div className={s.menuItem}>
                                         <span onClick={onHandleRemove}>
-                                            <AiFillDelete /> Remove
+                                            <AiFillDelete/> Remove
                                         </span>
                                     </div>
                                 )

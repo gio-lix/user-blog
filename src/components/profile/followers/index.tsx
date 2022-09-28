@@ -24,7 +24,7 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
     const [currentUser, setCurrentUser] = useState<UserState[]>([])
     useEffect(() => {
         setCurrentUser([])
-        if  (showFollowers) {
+        if (showFollowers) {
             setLoading(true)
             profile?.followers.forEach((e: string) => {
                 axios.get(`/api/user/${e}`, {
@@ -32,13 +32,10 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
                 })
                     .then(res => setCurrentUser((prev: any) => [...prev, res.data.user]))
                     .catch(err => console.log(err))
-                    .finally(() =>  setLoading(false))
+                    .finally(() => setLoading(false))
             })
         }
-
-
     }, [showFollowers])
-
 
 
     const handleLink = (id: string) => {
@@ -52,7 +49,7 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
             <div>
                 <h1>Followers</h1>
                 <button onClick={() => setShowFollowers(false)}>&times;</button>
-                {loading ? <img  className={s.spinner} src={IMAGES.spinner} alt="spinner"/> : (
+                {loading ? <img className={s.spinner} src={IMAGES.spinner} alt="spinner"/> : (
                     <>
                         {currentUser.map((user: UserState) => {
                             return (

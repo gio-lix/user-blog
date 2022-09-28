@@ -117,59 +117,118 @@
 
     &_box {
       position: relative;
+      display: flex;
+      justify-content: center;
 
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: -30px;
-        left: 0;
-        height: 60px;
-        width: 100%;
-        background: linear-gradient(to top, black, transparent 80%);
-        transition: all 150ms ease-in-out !important;
-      }
+      > figure {
+        position: relative;
+        width: auto;
+        display: flex;
+        justify-content: center;
 
-      &:hover {
+        > span {
+          position: absolute;
+          top: 50%;
+          font-size: 33px;
+          padding: 10px;
+          cursor: pointer;
+          transition: color 200ms ease-in-out;
+          color: #d9d9d9;
+
+          &:hover {
+            color: white;
+          }
+
+          &::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: $bg-black;
+            opacity: .3;
+
+
+          }
+        }
+
         &::after {
           content: "";
           position: absolute;
-          bottom: 0;
+          bottom: -30px;
           left: 0;
+          height: 60px;
+          width: 100%;
+          background: linear-gradient(to top, black, transparent 80%);
+          transition: all 150ms ease-in-out !important;
         }
-      }
-
-      > img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: fill;
-      }
-
-      > span {
-        position: absolute;
-        top: 50%;
-        font-size: 33px;
-        padding: 10px;
-        cursor: pointer;
-        transition: color 200ms ease-in-out;
 
         &:hover {
-          color: white;
+          &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+          }
         }
 
-        &::before {
-          content: "";
-          position: absolute;
-          z-index: -1;
-          left: 0;
-          top: 0;
-          width: 50px;
-          height: 50px;
-          background: $bg-black;
-          opacity: .3;
-
-
+        > img {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: fill;
         }
       }
+
+      //&::after {
+      //  content: "";
+      //  position: absolute;
+      //  bottom: -30px;
+      //  left: 0;
+      //  height: 60px;
+      //  width: 100%;
+      //  background: linear-gradient(to top, black, transparent 80%);
+      //  transition: all 150ms ease-in-out !important;
+      //}
+
+      //&:hover {
+      //  &::after {
+      //    content: "";
+      //    position: absolute;
+      //    bottom: 0;
+      //    left: 0;
+      //  }
+      //}
+
+
+
+      //> span {
+      //  position: absolute;
+      //  top: 50%;
+      //  font-size: 33px;
+      //  padding: 10px;
+      //  cursor: pointer;
+      //  transition: color 200ms ease-in-out;
+      //
+      //  &:hover {
+      //    color: white;
+      //  }
+      //
+      //  &::before {
+      //    content: "";
+      //    position: absolute;
+      //    z-index: -1;
+      //    left: 0;
+      //    top: 0;
+      //    width: 50px;
+      //    height: 50px;
+      //    background: $bg-black;
+      //    opacity: .3;
+      //
+      //
+      //  }
+      //}
 
       .left_button {
         position: absolute;

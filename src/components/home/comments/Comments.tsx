@@ -6,6 +6,7 @@ import s from "./Comments.module.scss"
 interface Props {
     post: PostsState
 }
+
 interface CommentProps extends CommentState {
     reply: string
 }
@@ -18,39 +19,39 @@ const Comments: FC<Props> = ({post}) => {
 
 
     useEffect(() => {
-        const newRap = post.comments.filter(cm => (cm as CommentProps).reply)
+        const newRap = post?.comments.filter(cm => (cm as CommentProps).reply)
         setReplyComment(newRap)
-    },[post.comments])
+    }, [post?.comments, post])
 
     useEffect(() => {
-        const newCom = post.comments.filter(cm => !(cm as CommentProps).reply)
+        const newCom = post?.comments.filter(cm => !(cm as CommentProps).reply)
         setComments(newCom)
-        setShowComments(newCom.slice(newCom.length - next))
-    }, [post.comments, next])
+        setShowComments(newCom?.slice(newCom?.length - next))
+    }, [post?.comments, next, post])
 
 
     return (
-        <div >
+        <div>
             <h2 style={{marginBottom: "10px"}}>Comments</h2>
-            {showComments.map((comment: CommentState, index: number) => (
+            {showComments?.map((comment: CommentState, index: number) => (
                 <CommentsDisplay
                     key={`${comment._id}_${index}`}
                     post={post}
                     comment={comment}
-                    replyComment={replyComment.filter(item => (item as CommentProps).reply === comment._id)}
+                    replyComment={replyComment?.filter(item => (item as CommentProps).reply === comment._id)}
                 />
             ))}
             <div className={s.comment}>
                 {
-                    comments.length - next > 0
+                    comments?.length - next > 0
                         ? (
                             <div onClick={() => setNext(next + 10)}>
                                 See more comments...
                             </div>
                         )
-                        : comments.length > 2
+                        : comments?.length > 2
                         && (
-                            <div  onClick={() => setNext(2)}>
+                            <div onClick={() => setNext(2)}>
                                 Hide Comments...
                             </div>
                         )

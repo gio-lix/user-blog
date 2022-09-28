@@ -14,7 +14,7 @@ const CartBody: FC<Props> = ({post}) => {
     const [readMore, setReadMore] = useState<boolean>(false)
 
     const right = () => {
-        if (post.images.length - 1 === imageIndex) return
+        if (post?.images.length - 1 === imageIndex) return
         setImageIndex(prev => prev + 1)
     }
     const left = () => {
@@ -26,38 +26,40 @@ const CartBody: FC<Props> = ({post}) => {
         <div className={s.body}>
             <div className={s.body_content}>
                 <span>
-                    {post.content.length < 60
-                        ? post.content
-                        : readMore ? post.content + " " : post.content.slice(0, 60) + "..."
+                    {post?.content.length < 60
+                        ? post?.content
+                        : readMore ? post?.content + " " : post?.content.slice(0, 60) + "..."
                     }
                 </span>
-                {post.content.length > 60 &&
+                {post?.content.length > 60 &&
                     <span className={s.readMore} onClick={() => setReadMore(!readMore)}>
                         {readMore ? "Hide content" : "Read more"}
                     </span>
                 }
             </div>
             <div className={s.body_img}>
-                {post.images.length > 1 ? (
+                {post?.images.length > 1 ? (
                     <div className={s.body_img_box}>
-                        <img src={post.images[imageIndex]} alt="img"/>
-                        <span onClick={left} className={s.left_button}><AiOutlineLeft/></span>
-                        <span onClick={right} className={s.right_button}><AiOutlineRight/></span>
-                        <div className={s.dash}>
-                            {post.images.map((el, index: number) => (
-                                <span
-                                    className={clsx(index === imageIndex && s.white)}
-                                    onClick={() => setImageIndex(index)}
-                                    key={index}
-                                >
+                        <figure>
+                            <img src={post.images[imageIndex]} alt="img"/>
+                            <span onClick={left} className={s.left_button}><AiOutlineLeft/></span>
+                            <span onClick={right} className={s.right_button}><AiOutlineRight/></span>
+                            <div className={s.dash}>
+                                {post.images.map((el, index: number) => (
+                                    <span
+                                        className={clsx(index === imageIndex && s.white)}
+                                        onClick={() => setImageIndex(index)}
+                                        key={index}
+                                    >
                                 <BsDashLg/>
-                        </span>
-                            ))}
-                        </div>
+                                </span>
+                                ))}
+                            </div>
+                        </figure>
                     </div>
                 ) : (
                     <>
-                        <img src={post.images[0]} alt=""/>
+                        <img src={post?.images[0]} alt=""/>
                     </>
                 )}
             </div>

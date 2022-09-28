@@ -1,18 +1,17 @@
-import React, {FC, SyntheticEvent, useEffect, useRef, useState} from 'react';
-import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
+import React, {SyntheticEvent, useEffect, useRef, useState} from 'react';
 import {MdOutlineMonochromePhotos, MdPhoto} from "react-icons/md"
 import {IoMdClose} from "react-icons/io"
 import s from "./StatusModal.module.scss"
 import {imageUpload} from "../../utils/ImageUploaded";
+import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {createPosts, setEdit, setModal, updatePosts} from "../../redux/slices/postsSlice";
+import {setNotify,  setNotifyReset} from "../../redux/slices/notifySlices";
 import {IMAGES} from "../../images";
-import Loading from "../notify/loading";
-
 
 
 const StatusModal = () => {
     const dispatch = useAppDispatch()
-    const {user, token, status} = useAppSelector((state: RootState) => state.auth)
+    const {user, token} = useAppSelector((state: RootState) => state.auth)
     const {edit} = useAppSelector((state: RootState) => state.posts)
     const [content, setContent] = useState<string>("")
     const [images, setImages] = useState<any>([])
@@ -22,9 +21,7 @@ const StatusModal = () => {
     const useCanvasRef = useRef<any>()
 
 
-    console.log("status - - - > > > > > ", status)
-
-    const  handleChangeImage = (e: any) => {
+    const handleChangeImage = (e: any) => {
         let err = ""
         let newImages: any = []
         if (!e.target.files) {
@@ -67,7 +64,7 @@ const StatusModal = () => {
         useCanvasRef.current.setAttribute("width", width)
         useCanvasRef.current.setAttribute("height", height)
         const ctx = useCanvasRef.current.getContext("2d")
-        ctx.drawImage(useVideoRef.current, 0,0,width,height)
+        ctx.drawImage(useVideoRef.current, 0, 0, width, height)
         let URL = useCanvasRef.current.toDataURL()
         setImages([...images, {camera: URL}])
     }
@@ -76,35 +73,47 @@ const StatusModal = () => {
         setStream(false)
     }
 
+    const [loading, setLoading] = useState(false)
+
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault()
-
         let err = ""
         let media: string[] = []
 
 
+
+
         for (let img of images) {
             if (img.camera) {
-                const {success,error} = await imageUpload(img.camera)
+                const {success, error} = await imageUpload(img.camera)
                 media.push((success as any).url)
                 err = error
             } else {
-                const {success,error} = await imageUpload(img)
+                const {success, error} = await imageUpload(img)
                 media.push((success as any).url)
                 err = error
             }
         }
+        if (media.length === 0) {
+            return dispatch(setNotify({error: [{msg: "Please add photo!"}]}))
+        } else {
+            dispatch(setNotifyReset())
+            setLoading(true)
+        }
+
 
         if (edit) {
-            dispatch(updatePosts({content,images: media, user,id: edit._id, token} ))
+            const data = await dispatch(updatePosts({content, images: media, user, id: edit._id, token}))
+            if ((data as any).meta.requestStatus === "fulfilled") setLoading(false)
         } else {
-            const lemon = await dispatch(createPosts({content,images: media, user, token} ))
-            console.log("lemon - ", lemon)
+            const data = await dispatch(createPosts({content, images: media, user, token}))
+            if ((data as any).meta.requestStatus === "fulfilled") setLoading(false)
         }
 
         setContent(" ")
         setImages([])
         dispatch(setModal(false))
+
         if (tracks) tracks.stop()
 
     }
@@ -114,12 +123,13 @@ const StatusModal = () => {
             setContent(edit.content)
             setImages(edit.images)
         }
-    },[edit])
-
+    }, [edit])
     const handleClose = () => {
         dispatch(setModal(false))
         dispatch(setEdit(null))
     }
+
+
 
     return (
         <div className={s.modal}>
@@ -132,7 +142,7 @@ const StatusModal = () => {
                 <div>
                     <textarea
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
                         name="content"
                         placeholder={`${user?.username}, what are you thinking? `}>
 
@@ -141,12 +151,12 @@ const StatusModal = () => {
                         {images.map((img: any, index: number) => {
                             return (
                                 <div key={index}>
-                                    <img  src={img.camera
-                                            ? img.camera
-                                            : typeof img === "object" ? URL.createObjectURL(img) : img
+                                    <img src={img.camera
+                                        ? img.camera
+                                        : typeof img === "object" ? URL.createObjectURL(img) : img
                                     } alt=""/>
                                     <span role="button" onClick={() => deleteImage(index)}>
-                                        <IoMdClose />
+                                        <IoMdClose/>
                                     </span>
                                 </div>
                             )
@@ -163,7 +173,7 @@ const StatusModal = () => {
                                 height="100%"
                             />
                             <span className={s.stopStream} role="button" onClick={handleStreamStop}>
-                                <IoMdClose />
+                                <IoMdClose/>
                             </span>
                             <canvas ref={useCanvasRef} style={{display: "none"}}/>
                         </div>
@@ -172,17 +182,17 @@ const StatusModal = () => {
                         {stream ? (
                             <>
                                 <span role="button" onClick={handleScreenCapture}>
-                                    <MdOutlineMonochromePhotos  />
+                                    <MdOutlineMonochromePhotos/>
                                 </span>
                             </>
                         ) : (
                             <>
                                 <span role="button" onClick={handleScreenCamera}>
-                                    <MdOutlineMonochromePhotos  />
+                                    <MdOutlineMonochromePhotos/>
                                 </span>
                                 <div>
                                     <label htmlFor="file">
-                                        <MdPhoto  />
+                                        <MdPhoto/>
                                     </label>
                                     <input
                                         type="file"
@@ -199,7 +209,11 @@ const StatusModal = () => {
 
                     </div>
                 </div>
-                <button type="submit">Post</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? (
+                        <img src={IMAGES.spinner} alt="spinner"/>
+                    ) : "Post"}
+                </button>
             </form>
         </div>
     );

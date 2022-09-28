@@ -15,15 +15,15 @@ interface Props {
     post: PostsState
 }
 
-const CartFooter:FC<Props> = ({post}) => {
+const CartFooter: FC<Props> = ({post}) => {
     const dispatch = useAppDispatch()
     const {token, user} = useAppSelector((state: RootState) => state.auth)
 
 
     const handleLike = async () => {
-        dispatch(setLikes({postId: post._id, userId: user?._id}))
+        dispatch(setLikes({postId: post?._id, userId: user?._id}))
         try {
-            await axios.put(`/api/posts/${post._id}/like`, null, {
+            await axios.put(`/api/posts/${post?._id}/like`, null, {
                 headers: {
                     'Authorization': `${token}`
                 }
@@ -34,9 +34,9 @@ const CartFooter:FC<Props> = ({post}) => {
         }
     }
     const handleUnlike = async () => {
-        dispatch(setUnLikes({postId: post._id, userId: user?._id}))
+        dispatch(setUnLikes({postId: post?._id, userId: user?._id}))
         try {
-            await axios.put(`/api/posts/${post._id}/unlike`, null, {
+            await axios.put(`/api/posts/${post?._id}/unlike`, null, {
                 headers: {
                     'Authorization': `${token}`
                 }
@@ -52,23 +52,23 @@ const CartFooter:FC<Props> = ({post}) => {
             <div>
                 <div className={s.footer_icon}>
                     <LikeButton
-                        like={post.likes.includes(user?._id!) }
+                        like={post?.likes.includes(user?._id!)}
                         handleLike={() => handleLike()}
                         handleUnlike={() => handleUnlike()}
                     />
                     <span>
-                        <TbMessageCircle2 />
+                        <TbMessageCircle2/>
                     </span>
                     <span>
-                        <BiPaperPlane />
+                        <BiPaperPlane/>
                     </span>
                 </div>
 
-                <RiBookmarkLine />
+                <RiBookmarkLine/>
             </div>
             <div>
-                <h6>{post.likes.length}</h6>
-                <h6>{post.comments.length} comments</h6>
+                <h6>{post?.likes.length}</h6>
+                <h6>{post?.comments.length} comments</h6>
             </div>
         </div>
     );

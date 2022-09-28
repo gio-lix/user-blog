@@ -13,10 +13,10 @@ interface Props {
     children?: React.ReactNode
 }
 
-const InputComments:FC<Props> = ({post, children,setOnReply,onReply}) => {
+const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
     const dispatch = useAppDispatch()
     const [content, setContent] = useState("")
-    const {user,token} = useAppSelector((state:RootState) => state.auth)
+    const {user, token} = useAppSelector((state: RootState) => state.auth)
 
 
     const handleSubmit = async (e: SyntheticEvent) => {
@@ -37,17 +37,21 @@ const InputComments:FC<Props> = ({post, children,setOnReply,onReply}) => {
 
 
         try {
-            const {data} = await axios.post(`/api/comment`, {...newComment, postId: post._id, postUserId: post.user._id}, {
+            const {data} = await axios.post(`/api/comment`, {
+                ...newComment,
+                postId: post?._id,
+                postUserId: post?.user._id
+            }, {
                 headers: {
                     'Authorization': `${token}`
                 }
             })
-            dispatch(setComments({postId: post._id, newComment: data.newComment}))
+            dispatch(setComments({postId: post?._id, newComment: data.newComment}))
         } catch (err) {
             console.log("err - ", err)
         }
 
-        setContent( "")
+        setContent("")
         if (setOnReply) return setOnReply(false)
 
     }

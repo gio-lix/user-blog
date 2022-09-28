@@ -8,7 +8,6 @@ const AppLayout = () => {
     const firstLogin = localStorage.getItem("firstLogin")
     const {token} = useAppSelector((state: RootState) => state.auth)
 
-
     useEffect(() => {
         (async () => {
             try {

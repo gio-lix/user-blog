@@ -11,6 +11,7 @@ import {refreshDataApi} from "./redux/slices/authSlices";
 import PageRender from "./customRouter/PageRender";
 import PrivateRouter from "./customRouter/PrivateRouter";
 import NotFound from "./components/NotFound";
+import PostPage from "./pages/post/[id]";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                 </Route>
                 <Route path="/" element={<AuthLayout/>}>
                     <Route index element={<Home/>}/>
+                    <Route path="post/:id" element={<PostPage />} />
                     <Route element={<PrivateRouter />}>
                         <Route  path=":page" element={ <> <PageRender  /> </> } />
                         <Route  path=":page/:id" element={ <> <PageRender  /> </> } />

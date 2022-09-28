@@ -1,4 +1,4 @@
-import {AnyAction, createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import axios from "axios";
 import {setNotify} from "./notifySlices";
 import {PostsState} from "../../typing";
@@ -9,6 +9,7 @@ const initialState = {
     modal: false,
     edit: null as PostsState | null,
     posts: [] as PostsState[],
+    post: null as PostsState | any,
     result: 0,
     pages: 2
 }
@@ -88,7 +89,21 @@ export const likePost = createAsyncThunk<Object, any>(
         }
     }
 )
-
+export const getPostApi = createAsyncThunk<Object, any>(
+    "post/getPostApi",
+    async (params, {dispatch}) => {
+        try {
+            const {data} = await axios.get(`/api/post/${params.id}`, {
+                headers: {
+                    'Authorization': `${params.token}`
+                }
+            })
+            return data
+        } catch (err) {
+            return dispatch(setNotify({error: [(err as any).response.data]}))
+        }
+    }
+)
 
 const postsSlice = createSlice({
     name: "posts",
@@ -102,30 +117,51 @@ const postsSlice = createSlice({
         },
         setComments: (state: State, action: any) => {
             const {postId, newComment, user} = action.payload
+
+
             let findIndex = state.posts.findIndex(e => e._id === postId)
             state.posts[findIndex].comments.push(newComment)
+
+            state.post?._id === postId && state.post?.comments.push(newComment)
         },
         setLikes: (state: State, action: any) => {
+
             const findIndex = state.posts.findIndex(e => e._id === action.payload.postId)
             state.posts[findIndex].likes.push(action.payload.userId)
+
+            state.post?._id === action.payload.postId && state.post?.likes.unshift(action.payload.userId)
+
         },
         setUnLikes: (state: State, {payload}: any) => {
             const findIndex = state.posts.findIndex(e => e._id === payload.postId)
             state.posts[findIndex].likes.includes(payload.userId) && state.posts[findIndex].likes.pop()
+
+
+            let ifTrue = state.post?._id === payload.postId
+            if (ifTrue) {
+                (state.post as PostsState).likes = state.post?.likes.filter((ele: PostsState) => ele !== payload.userId)
+            }
+
+
         },
         setCommentLike: (state: State, {payload}: any) => {
             const findIndex = state.posts.findIndex(e => e._id === payload.postId)
-            const findCommentIndex = current(state.posts[findIndex]).comments.findIndex(e => e._id === payload.commentId)
-
+            const findCommentIndex = state.posts[findIndex].comments.findIndex(e => e._id === payload.commentId)
             state.posts[findIndex].comments[findCommentIndex].likes.push(payload.user)
+
+            state.post?._id === payload.postId && state.post.comments[findCommentIndex].likes.push(payload.user)
         },
         setCommentUnLike: (state: State, {payload}: any) => {
             const findIndex = state.posts.findIndex(e => e._id === payload.postId)
             const findCommentIndex = current(state.posts[findIndex]).comments.findIndex(e => e._id === payload.commentId)
 
-            state.posts[findIndex].comments[findCommentIndex].likes = state.posts[findIndex].comments[findCommentIndex].likes.filter((el: any) => el._id !== payload.user._id)
-        },
+            state.posts[findIndex].comments[findCommentIndex].likes = state.posts[findIndex].comments[findCommentIndex].likes.filter((el) => el._id !== payload.user._id)
 
+            let ifTrue = state.post?._id === payload.postId
+            if (ifTrue) {
+                (state.post as PostsState).comments[findCommentIndex].likes = state.post?.comments[findCommentIndex].likes.filter((el: PostsState) => el._id !== payload.user._id)
+            }
+        },
         setUpdateComment: (state: State, {payload}: any) => {
             const findIndex = state.posts.findIndex(e => e._id === payload.postId)
             state.posts[findIndex].comments.map(com => {
@@ -142,13 +178,13 @@ const postsSlice = createSlice({
 
         }
     },
+
     extraReducers: (builder) => {
         builder
             .addCase(createPosts.pending, (state: State) => {
                 state.status = "loading"
             })
             .addCase(createPosts.fulfilled, (state: State, {payload}: any) => {
-                console.log("payload -", payload.newPost)
                 state.posts.unshift(payload.newPost)
                 state.status = "loaded"
 
@@ -162,6 +198,11 @@ const postsSlice = createSlice({
                 const findIndex = state.posts.findIndex(e => e._id === payload.newPost._id)
                 state.posts.splice(findIndex, 1, payload.newPost)
                 state.status = "loaded"
+
+                if (state.post?._id === payload.newPost._id ) {
+                    state.post = payload.newPost
+                }
+
             })
 
             // get posts
@@ -187,6 +228,14 @@ const postsSlice = createSlice({
                     return post
                 })
                 state.status = "loaded"
+            })
+
+            .addCase(getPostApi.pending, (state: State) => {
+                state.status = "loading"
+            })
+            .addCase(getPostApi.fulfilled, (state: State, {payload}: any) => {
+                state.status = "loaded"
+                state.post = payload.post
             })
 
     }

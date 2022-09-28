@@ -6,14 +6,14 @@ import moment from "moment";
 import {HiDotsHorizontal} from "react-icons/hi"
 import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
 import {GoPencil} from "react-icons/go"
-import {AiFillDelete,AiOutlineCopy} from "react-icons/ai"
+import {AiFillDelete, AiOutlineCopy} from "react-icons/ai"
 import {setEdit, setModal} from "../../../../redux/slices/postsSlice";
 
 interface Props {
     post: PostsState
 }
 
-const CartHeader:FC<Props> = ({post}) => {
+const CartHeader: FC<Props> = ({post}) => {
     const {user} = useAppSelector((state: RootState) => state.auth)
     const dispatch = useAppDispatch()
     const [drop, setDrop] = useState<boolean>(false)
@@ -27,7 +27,7 @@ const CartHeader:FC<Props> = ({post}) => {
     useEffect(() => {
         window.addEventListener("click", handleClickRef)
         return () => window.removeEventListener("click", handleClickRef)
-    },[useInfoRef.current])
+    }, [useInfoRef.current])
 
 
     const handleEditPost = () => {
@@ -35,8 +35,6 @@ const CartHeader:FC<Props> = ({post}) => {
         dispatch(setModal(true))
         dispatch(setEdit(post))
     }
-
-    console.log(post.user.avatar)
 
 
     return (
@@ -50,32 +48,32 @@ const CartHeader:FC<Props> = ({post}) => {
                 />
                 <div>
                     <h6>
-                        <Link to={`/profile/${post.user._id}`} >
-                            {user?.username}
+                        <Link to={`/profile/${post?.user._id}`}>
+                            {post?.user.username}
                         </Link>
                     </h6>
                     <small>
-                            {moment(post.createdAt).fromNow()}
+                        {moment(post?.createdAt).fromNow()}
                     </small>
                 </div>
             </div>
-            <div   ref={useInfoRef} className={s.header_drop}>
+            <div ref={useInfoRef} className={s.header_drop}>
                 <span className={s.dropDown} onClick={() => setDrop(!drop)}>
-                    <HiDotsHorizontal />
+                    <HiDotsHorizontal/>
                 </span>
-                {(drop && user?._id === post.user._id ) && (
+                {(drop && user?._id === post?.user._id) && (
                     <div className={s.header_drop_menu}>
-                            <>
-                                <div onClick={handleEditPost}>
-                                    <GoPencil /> Edit Post
-                                </div>
-                                <div>
-                                    <AiFillDelete /> Remove Post
-                                </div>
-                                <div>
-                                    <AiOutlineCopy /> copy Post
-                                </div>
-                            </>
+                        <>
+                            <div onClick={handleEditPost}>
+                                <GoPencil/> Edit Post
+                            </div>
+                            <div>
+                                <AiFillDelete/> Remove Post
+                            </div>
+                            <div>
+                                <AiOutlineCopy/> copy Post
+                            </div>
+                        </>
                     </div>
                 )}
             </div>
