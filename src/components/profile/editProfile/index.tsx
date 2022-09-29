@@ -48,7 +48,7 @@ const EditProfile: FC<Props> = ({setOnEdit, setCount}) => {
         const file = e.target.files[0]
         setAvatar(file)
 
-        const {success, error} = await imageUpload(file)
+        const {success} = await imageUpload(file)
 
         setUploadImage((success as any).url)
 
@@ -82,7 +82,7 @@ const EditProfile: FC<Props> = ({setOnEdit, setCount}) => {
                     <figure className={s.image}>
                         <img
                             src={avatar ? URL.createObjectURL(avatar) : profile?.avatar}
-                            alt="image"
+                            alt="profile"
                         />
                         {/*<figcaption>Change</figcaption>*/}
                     </figure>

@@ -28,7 +28,7 @@ const Following:FC<Props> = ({setShowFollowing, profile,showFollowing}) => {
                 .then(res => setCurrentUser((prev: UserState[]) => [...prev, res.data.user]))
                 .catch(err => console.log(err))
         })
-    }, [showFollowing])
+    }, [showFollowing, profile?.following])
 
 
     const handleLink = (id: string) => {

@@ -10,8 +10,13 @@ const initialState = {
     edit: null as PostsState | null,
     posts: [] as PostsState[],
     post: null as PostsState | any,
+    discoveryPosts:  {
+        posts: [] as PostsState[],
+        result: 0,
+        page: 2
+    },
     result: 0,
-    pages: 2
+    pages: 1
 }
 
 
@@ -62,7 +67,7 @@ export const getPosts = createAsyncThunk<Object, any>(
         try {
             const {data} = await axios.get(`/api/posts`, {
                 headers: {
-                    'Authorization': `${params}`
+                    'Authorization': `${params.token}`
                 }
             })
             return data
@@ -105,6 +110,23 @@ export const getPostApi = createAsyncThunk<Object, any>(
     }
 )
 
+export const getDiscoveryPostApi = createAsyncThunk<Object, any>(
+    "post/getDiscoveryPostApi",
+    async (params, {dispatch}) => {
+        try {
+            const {data} = await axios.get(`/api/post_discover?page=${params.page}`, {
+                headers: {
+                    'Authorization': `${params.token}`
+                }
+            })
+            console.log("getDiscoveryPostApi - ", data)
+            return data
+        } catch (err) {
+            return dispatch(setNotify({error: [(err as any).response.data]}))
+        }
+    }
+)
+
 const postsSlice = createSlice({
     name: "posts",
     initialState,
@@ -115,9 +137,14 @@ const postsSlice = createSlice({
         setEdit: (state: State, action: any) => {
             state.edit = action.payload
         },
-        setComments: (state: State, action: any) => {
-            const {postId, newComment, user} = action.payload
+        setLoadPosts: (state: State, {payload}: any) => {
+            state.posts = [...state.posts, ...payload.posts]
+            state.result = state.result + payload.result
+            state.pages = state.pages + 1
+        },
 
+        setComments: (state: State, action: any) => {
+            const {postId, newComment} = action.payload
 
             let findIndex = state.posts.findIndex(e => e._id === postId)
             state.posts[findIndex].comments.push(newComment)
@@ -172,15 +199,26 @@ const postsSlice = createSlice({
             })
 
         },
+        setDiscoveryPosts: (state: State, {payload}: any) => {
+            state.discoveryPosts.posts = payload.posts
+            state.discoveryPosts.result = payload.result
+            state.discoveryPosts.page = 2
+        },
+        setUpdateDiscoveryPosts: (state: State, {payload}: any) => {
+            state.discoveryPosts.posts = [...state.discoveryPosts.posts, ...payload.posts]
+            state.discoveryPosts.result = state.discoveryPosts.result + payload.result
+            state.discoveryPosts.page = state.discoveryPosts.page + 1
+        },
         setCommentRemove: (state:State, {payload}: any) => {
             let findPostIdx = state.posts.findIndex(post => post._id === payload.postId)
             state.posts[findPostIdx].comments = state.posts[findPostIdx].comments.filter(el => el._id !== payload.commentId)
+        }},
 
-        }
-    },
+
 
     extraReducers: (builder) => {
         builder
+            // create
             .addCase(createPosts.pending, (state: State) => {
                 state.status = "loading"
             })
@@ -189,7 +227,6 @@ const postsSlice = createSlice({
                 state.status = "loaded"
 
             })
-
             // update
             .addCase(updatePosts.pending, (state: State) => {
                 state.status = "loading"
@@ -204,7 +241,6 @@ const postsSlice = createSlice({
                 }
 
             })
-
             // get posts
             .addCase(getPosts.pending, (state: State) => {
                 state.status = "loading"
@@ -213,9 +249,9 @@ const postsSlice = createSlice({
                 state.status = "loaded"
                 state.posts = payload.posts
                 state.result = payload.result
+                state.pages = 2
+
             })
-
-
             // likes
             .addCase(likePost.pending, (state: State) => {
                 state.status = "loading"
@@ -229,7 +265,7 @@ const postsSlice = createSlice({
                 })
                 state.status = "loaded"
             })
-
+            // post
             .addCase(getPostApi.pending, (state: State) => {
                 state.status = "loading"
             })
@@ -238,6 +274,17 @@ const postsSlice = createSlice({
                 state.post = payload.post
             })
 
+
+            // discovery
+            .addCase(getDiscoveryPostApi.pending, (state: State) => {
+                state.status = "loading"
+            })
+            .addCase(getDiscoveryPostApi.fulfilled, (state: State, {payload}: any) => {
+                state.discoveryPosts.posts = [...state.discoveryPosts.posts, ...payload.posts]
+                state.discoveryPosts.result = state.discoveryPosts.result + payload.result
+                state.discoveryPosts.page = state.discoveryPosts.page + 1
+                state.status = "loaded"
+            })
     }
 })
 
@@ -250,7 +297,10 @@ export const {
     setUpdateComment,
     setCommentLike,
     setCommentUnLike,
-    setCommentRemove
+    setCommentRemove,
+    setDiscoveryPosts,
+    setUpdateDiscoveryPosts,
+    setLoadPosts
 } = postsSlice.actions
 
 export const postsReducer = postsSlice.reducer

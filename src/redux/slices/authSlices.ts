@@ -1,5 +1,5 @@
 import axios from "axios";
-import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {UserState} from "../../typing";
 import {setNotify} from "./notifySlices";
 
@@ -102,6 +102,11 @@ const authSlice = createSlice({
             state.ids.push(action.payload._id)
             state.users.push(action.payload)
         },
+        setProfilePosts: (state: State, action: any) => {
+            state.profilePosts.posts = [...state.profilePosts.posts, ...action.payload.post]
+            state.profilePosts.result = state.profilePosts.result + action.payload.result
+            state.profilePosts.page = state.profilePosts.page + 1
+        }
 
     },
     extraReducers: (builder) => {
@@ -157,10 +162,11 @@ const authSlice = createSlice({
                 state.status = "loaded"
                 state.profilePosts.posts = payload.post
                 state.profilePosts.result = payload.result
+                state.profilePosts.page = 2
             })
     }
 });
 
 
-export const {setFollowers, setFollowing,setProfileUsers} = authSlice.actions
+export const {setFollowers, setFollowing,setProfileUsers, setProfilePosts} = authSlice.actions
 export const authReducer = authSlice.reducer

@@ -40,7 +40,7 @@ const Menu = () => {
                 <ul>
                     {navLink.map(item => (
                         <li key={item.label} >
-                            <NavLink to={item.path} className={s.icons + " " +`${isActive(item.path)}`}>
+                            <NavLink to={item.path} className={s.icons +  +`${isActive(item.path)}`}>
                                 {item.Icon}
                             </NavLink>
                         </li>
@@ -50,7 +50,7 @@ const Menu = () => {
                     </li>
                     <li  className={s.drop}>
                         {token ? <img style={{opacity:".5"}} src={user?.avatar} alt="avatar"/> : "user"}
-                        <span role="icon" className={s.rotateActive}>
+                        <span className={s.rotateActive}>
                             <AiFillCaretRight />
                         </span>
                         <div className={s.down}>

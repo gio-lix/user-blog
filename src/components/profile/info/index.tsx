@@ -43,12 +43,13 @@ const Info = () => {
         if (ids.every((item: any) => item !== id)) {
             getUser()
         }
-    }, [id, user, ids])
+    }, [id, user, ids,dispatch, token])
 
 
     useEffect(() => {
         dispatch(postProfileDataApi({id, token}))
-    }, [id])
+    }, [id, token, dispatch])
+
     const handleClick = (e: any) => {
         if (!e.path.includes(editRef.current)) {
             setOnEdit(false)
@@ -70,10 +71,10 @@ const Info = () => {
                 })
                 setCurrentUser(data.user)
             } catch (err) {
-                dispatch(setNotify({error: [(err as any).response.data]}))
+                console.log(err)
             }
         })()
-    }, [id, count])
+    }, [id, count, token])
 
 
     return (

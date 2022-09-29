@@ -4,7 +4,7 @@ import clsx from "clsx";
 import {Link, useNavigate} from "react-router-dom";
 import {IMAGES} from "../../images";
 import {validation} from "../../utils/valid";
-import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
+import { useAppDispatch} from "../../redux/store";
 import {postRegisterDataApi} from "../../redux/slices/authSlices";
 import {setNotify} from "../../redux/slices/notifySlices";
 

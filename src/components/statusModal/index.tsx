@@ -81,8 +81,6 @@ const StatusModal = () => {
         let media: string[] = []
 
 
-
-
         for (let img of images) {
             if (img.camera) {
                 const {success, error} = await imageUpload(img.camera)

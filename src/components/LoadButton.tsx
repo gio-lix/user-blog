@@ -8,13 +8,16 @@ interface Props {
 }
 
 const LoadButton:FC<Props> = ({handleLoadMore,page,result, load}) => {
+
     return (
         <>
             {
                 result < 3 * (page - 1) ? " " :
-                    !load &&   <button onClick={handleLoadMore} className="loadButton">
-                        Load more
-                    </button>
+                    !load && (
+                        <button onClick={handleLoadMore} className="loadButton">
+                            Load more
+                        </button>
+                     )
             }
 
         </>

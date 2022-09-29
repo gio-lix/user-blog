@@ -1,34 +1,23 @@
 import React, {useEffect} from 'react';
-import {Outlet, useNavigate, useParams} from "react-router-dom"
+import {Outlet, useNavigate} from "react-router-dom"
 import Header from "../components/header/header";
-import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
-import {getPosts} from "../redux/slices/postsSlice";
-import {postProfilePosts} from "../redux/slices/authSlices";
+import {RootState, useAppSelector} from "../redux/store";
 import StatusModal from "../components/statusModal";
 
 
 const AuthLayout = () => {
-    const dispatch = useAppDispatch()
     const navigate = useNavigate()
-
-    const {id} = useParams()
     const {token} = useAppSelector((state: RootState) => state.auth)
-
     const firstLogin = localStorage.getItem("firstLogin")
     const {modal} = useAppSelector((state: RootState) => state.posts)
 
 
 
     useEffect(() => {
-        if (token) {
-            dispatch(getPosts(token))
-            if (id) {
-                dispatch(postProfilePosts({id, token }))
-            }
-        } else if(firstLogin === null ) {
+        if (firstLogin === null && !token) {
             navigate("/login")
         }
-    },[token, id])
+    },[firstLogin, token, navigate])
 
 
     return (

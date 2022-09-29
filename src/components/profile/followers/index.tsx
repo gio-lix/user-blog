@@ -19,9 +19,8 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
     const navigate = useNavigate()
     const {user: auth, token} = useAppSelector((state: RootState) => state.auth)
     const [loading, setLoading] = useState(false)
-
-
     const [currentUser, setCurrentUser] = useState<UserState[]>([])
+
     useEffect(() => {
         setCurrentUser([])
         if (showFollowers) {
@@ -35,7 +34,7 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
                     .finally(() => setLoading(false))
             })
         }
-    }, [showFollowers])
+    }, [showFollowers, profile?.followers])
 
 
     const handleLink = (id: string) => {
