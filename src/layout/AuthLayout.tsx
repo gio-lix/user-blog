@@ -21,7 +21,7 @@ const AuthLayout = () => {
 
 
     return (
-        <section className="main-container">
+        <section   className="main-container">
             {token && <Header />}
             {modal && <StatusModal />}
             <div style={{height: "70px", width:"100%"}}> </div>

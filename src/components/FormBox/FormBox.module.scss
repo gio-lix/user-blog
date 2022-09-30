@@ -4,7 +4,7 @@
 .root {
   max-width: 70%;
   min-height: 400px;
-  margin: 50px auto;
+  margin: 0 auto;
   padding: 20px;
   border: 1px solid #c9c9c9;
   box-shadow: 11px 24px 47px -21px rgba(125,118,125,1);
@@ -45,4 +45,8 @@
     }
   }
 }
-
+.formBox_theme {
+  background-color: #3b3b64!important;
+  border: 1px solid #575757;
+  box-shadow: 11px 24px 47px -21px rgb(7, 7, 7);
+}

@@ -181,54 +181,6 @@
         }
       }
 
-      //&::after {
-      //  content: "";
-      //  position: absolute;
-      //  bottom: -30px;
-      //  left: 0;
-      //  height: 60px;
-      //  width: 100%;
-      //  background: linear-gradient(to top, black, transparent 80%);
-      //  transition: all 150ms ease-in-out !important;
-      //}
-
-      //&:hover {
-      //  &::after {
-      //    content: "";
-      //    position: absolute;
-      //    bottom: 0;
-      //    left: 0;
-      //  }
-      //}
-
-
-
-      //> span {
-      //  position: absolute;
-      //  top: 50%;
-      //  font-size: 33px;
-      //  padding: 10px;
-      //  cursor: pointer;
-      //  transition: color 200ms ease-in-out;
-      //
-      //  &:hover {
-      //    color: white;
-      //  }
-      //
-      //  &::before {
-      //    content: "";
-      //    position: absolute;
-      //    z-index: -1;
-      //    left: 0;
-      //    top: 0;
-      //    width: 50px;
-      //    height: 50px;
-      //    background: $bg-black;
-      //    opacity: .3;
-      //
-      //
-      //  }
-      //}
 
       .left_button {
         position: absolute;
@@ -281,6 +233,7 @@
     justify-content: space-between;
     font-size: $font-lg-20;
 
+
     .footer_icon {
       > span {
         cursor: pointer;
@@ -302,3 +255,35 @@
 }
 
 
+.dark_theme {
+  background-color: black!important;
+  border: 1px solid #363636;
+  box-shadow: 2px 4px 12px -4px rgb(0, 0, 0);
+  > div {
+    &:hover {
+      background: #606060!important;
+      color: white;
+    }
+  }
+}
+.dropDown_black {
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    &::after {
+      content: "more";
+      position: absolute;
+      z-index: 20;
+      top: 6px;
+      left: 23px;
+      background: #606060!important;
+      color: #d7d7d7;
+      display: flex;
+      align-items: center;
+      padding: 0 5px 4px 5px;
+      box-shadow: 19px 18px 19px -16px rgba(166, 166, 166, 1);
+      border: 1px solid #363636;
+    }
+  }
+}

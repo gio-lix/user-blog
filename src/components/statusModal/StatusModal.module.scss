@@ -25,6 +25,7 @@
     padding: 10px;
     background-color: white;
 
+
     > div:first-child {
       display: flex;
       align-items: center;
@@ -114,6 +115,7 @@
           margin: 0 10px;
           cursor: pointer;
           opacity: .7;
+
           &:hover {
             opacity: 1;
           }
@@ -138,3 +140,12 @@
     }
   }
 }
+
+.dark_theme {
+  background: #313133 !important;
+  textarea {
+    background: #60606b !important;
+    color: white;
+  }
+}
+

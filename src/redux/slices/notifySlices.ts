@@ -4,6 +4,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 
 const initialState = {
+    theme: localStorage.getItem("blog_theme") || "light",
     status: "loaded",
     notify: {
         success: [],
@@ -27,9 +28,12 @@ const notifySlices = createSlice({
             state.notify.success = []
             state.notify.error = []
             state.status = "loaded"
+        },
+        setTheme: (state:State,action: PayloadAction<any>) => {
+            state.theme = action.payload
         }
     }
 })
 
-export const  {setNotify, setNotifyReset} = notifySlices.actions
+export const  {setNotify, setNotifyReset, setTheme} = notifySlices.actions
 export const notifyReducer = notifySlices.reducer

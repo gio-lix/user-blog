@@ -17,6 +17,7 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
     const dispatch = useAppDispatch()
     const [content, setContent] = useState("")
     const {user, token} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
 
 
     const handleSubmit = async (e: SyntheticEvent) => {
@@ -56,7 +57,9 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
 
     }
     return (
-        <form onSubmit={handleSubmit} className={s.input_comment}>
+        <form onSubmit={handleSubmit} className={clsx(s.input_comment,
+            theme === "light" && s.input_dark
+            )}>
             {children}
             <input
                 type="text"

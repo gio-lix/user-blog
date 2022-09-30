@@ -26,6 +26,7 @@ interface Props {
 const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
     const dispatch = useAppDispatch()
     const {token, user} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
     const [content, setContent] = useState<string>("")
     const [readMore, setReadMore] = useState<boolean>(false)
     const [onEdit, setOnEdit] = useState<boolean>(false)
@@ -108,7 +109,9 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
                     <h6>{comment.user.username}</h6>
                 </NavLink>
             </div>
-            <div className={s.comment_content_box}>
+            <div className={clsx(s.comment_content_box,
+                    theme === "light" && s.comment_content_box_theme
+                )}>
                 <div>
                     {
                         onEdit ? (
@@ -200,7 +203,6 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
                         <NavLink to={`/profile/${(onReply as CommentState).user?._id}`}>
                             @{(onReply as CommentState).user.username}:
                         </NavLink>
-
                     </InputComments>
                 }
             </div>

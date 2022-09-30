@@ -36,6 +36,24 @@
 }
 
 
+.menu_dark {
+  > ul {
+    .icons {
+      color: #cbcbcb !important;
+      &:hover {
+        color: greenyellow!important;
+      }
+    }
+    .active {
+      color: greenyellow!important;
+    }
+  }
+
+}
+
+
+
+
 .drop {
   position: relative;
   z-index: 50;
@@ -75,11 +93,16 @@
     background: $bg-white;
     box-shadow: 2px 4px 12px -4px rgba(184,184,184,1);
 
-    > a {
+
+    > a, button {
+      border: none;
+      background: transparent;
       text-decoration: none;
+      text-align: start;
       color: $gray-light-500;
       padding: 10px 0;
       cursor: pointer;
+
 
       &:hover {
         background-color: rgba(247, 247, 247, 1);
@@ -93,4 +116,16 @@
     }
   }
 
+}
+
+.drop_theme {
+  background-color: #49465e !important;
+  box-shadow: 2px 4px 12px -4px rgb(5, 5, 5)!important;
+
+  a, button {
+    color: white!important;
+    &:hover {
+      background-color: #646279 !important;
+    }
+  }
 }

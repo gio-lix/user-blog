@@ -8,6 +8,7 @@ import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store
 import {GoPencil} from "react-icons/go"
 import {AiFillDelete, AiOutlineCopy} from "react-icons/ai"
 import {setEdit, setModal} from "../../../../redux/slices/postsSlice";
+import clsx from "clsx";
 
 interface Props {
     post: PostsState
@@ -15,6 +16,7 @@ interface Props {
 
 const CartHeader: FC<Props> = ({post}) => {
     const {user} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state:RootState) => state.notify)
     const dispatch = useAppDispatch()
     const [drop, setDrop] = useState<boolean>(false)
     const useInfoRef = useRef<HTMLDivElement | null>(null)
@@ -58,11 +60,13 @@ const CartHeader: FC<Props> = ({post}) => {
                 </div>
             </div>
             <div ref={useInfoRef} className={s.header_drop}>
-                <span className={s.dropDown} onClick={() => setDrop(!drop)}>
+                <span className={clsx(theme === "light" ? s.dropDown_black : s.dropDown )} onClick={() => setDrop(!drop)}>
                     <HiDotsHorizontal/>
                 </span>
                 {(drop && user?._id === post?.user._id) && (
-                    <div className={s.header_drop_menu}>
+                    <div className={clsx(s.header_drop_menu,
+                        theme === "light" && s.dark_theme
+                    )}>
                         <>
                             <div onClick={handleEditPost}>
                                 <GoPencil/> Edit Post

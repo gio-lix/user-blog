@@ -22,7 +22,8 @@ const CommentsDisplay:FC<Props> = ({comment, post, replyComment}) => {
 
 
     return (
-        <CommentCard comment={comment}  post={post} commentId={comment._id} >
+        <CommentCard
+            comment={comment}  post={post} commentId={comment._id} >
             <div>
                 {showRep.map((item: CommentState, index: number) => (
                     <CommentCard

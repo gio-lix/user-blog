@@ -2,17 +2,22 @@ import React from 'react';
 import s from "./Status.module.scss"
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import {setModal} from "../../../redux/slices/postsSlice";
+import clsx from "clsx";
 
 const Status = () => {
     const dispatch = useAppDispatch()
     const {user} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state:RootState) => state.notify)
 
     return (
         <>
             <section className={s.status}>
-                <div className={s.status_box}>
+                <div className={clsx(s.status_box, theme === "light" && "background_theme")}>
                     <img src={user?.avatar} alt="avatar"/>
-                    <button onClick={() => dispatch(setModal(true))}>
+                    <button
+                        className={clsx(s.button,theme === "light" && s.button_dark )}
+                        onClick={() => dispatch(setModal(true))}
+                    >
                         {user?.username}, what are you thinking?
                     </button>
                 </div>

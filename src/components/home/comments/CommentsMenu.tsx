@@ -7,6 +7,7 @@ import {AiFillDelete} from "react-icons/ai";
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import {setCommentRemove} from "../../../redux/slices/postsSlice";
 import axios from "axios";
+import clsx from "clsx";
 
 interface Props {
     comment: CommentState
@@ -19,7 +20,7 @@ interface Props {
 const CommentsMenu: FC<Props> = ({comment, post, auth, setOnEdit}) => {
     const dispatch = useAppDispatch()
     const {token} = useAppSelector((state: RootState) => state.auth)
-
+    const {theme} = useAppSelector((state: RootState) => state.notify)
 
     const onHandleRemove = async () => {
         if (post.user._id === auth._id || comment.user._id === auth._id) {
@@ -40,7 +41,9 @@ const CommentsMenu: FC<Props> = ({comment, post, auth, setOnEdit}) => {
 
     const MenuItem = () => {
         return (
-            <div className={s.menuItem}>
+            <div className={clsx(s.menuItem,
+                    theme === "light" && s.menuItem_theme
+                )}>
                 <span onClick={() => setOnEdit(true)}>
                     <GoPencil/> Edit
                 </span>
@@ -60,7 +63,9 @@ const CommentsMenu: FC<Props> = ({comment, post, auth, setOnEdit}) => {
                     <span>
                         <BsThreeDotsVertical/>
                     </span>
-                    <div className={s.dop_down}>
+                    <div className={clsx(s.dop_down,
+                        theme === "light" && s.dop_down_theme
+                    )}>
                         {post.user._id === auth._id
                             ? comment.user._id === auth._id
                                 ? <>{MenuItem()}</>

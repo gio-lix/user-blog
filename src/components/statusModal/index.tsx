@@ -7,10 +7,12 @@ import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {createPosts, setEdit, setModal, updatePosts} from "../../redux/slices/postsSlice";
 import {setNotify,  setNotifyReset} from "../../redux/slices/notifySlices";
 import {IMAGES} from "../../images";
+import clsx from "clsx";
 
 
 const StatusModal = () => {
     const dispatch = useAppDispatch()
+    const {theme} = useAppSelector((state:RootState) => state.notify)
     const {user, token} = useAppSelector((state: RootState) => state.auth)
     const {edit} = useAppSelector((state: RootState) => state.posts)
     const [content, setContent] = useState<string>("")
@@ -131,7 +133,7 @@ const StatusModal = () => {
 
     return (
         <div className={s.modal}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className={clsx(theme === "light" && s.dark_theme )}>
                 <div>
                     <h5>Create Posts</h5>
                     <span role="button" onClick={handleClose}>&times;</span>

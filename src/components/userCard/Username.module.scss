@@ -31,7 +31,16 @@
       opacity: .7;
     }
   }
+}
 
+.user_theme {
+  background-color: #3a3754!important;
+  color: white!important;
 
-
+  h2 {
+    &:hover {
+      text-decoration: underline;
+      color: greenyellow!important;
+    }
+  }
 }

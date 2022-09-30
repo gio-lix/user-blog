@@ -16,45 +16,40 @@ interface Props {
     load: boolean
 }
 
-const Posts: FC<Props> = ({profilePosts, status,handleLoadMore, load}) => {
+const Posts: FC<Props> = ({profilePosts, status, handleLoadMore, load}) => {
 
     if (status !== "loading" && profilePosts?.result === 0) return <h2 className={s.no_post}>No Post!</h2>
 
 
-
     return (
         <>
-            {status !== "loading" && (
-              <>
-                  <section className={s.posts}>
-                      {profilePosts.posts?.map((post: PostsState, index: number) => (
-                          <NavLink to={`/post/${post?._id}`} key={`${post._id}_${index}`}>
-                              <img src={post?.images?.[0]} alt="img"/>
-                              <div className={s.info}>
+            <section className={s.posts}>
+                {profilePosts.posts?.map((post: PostsState, index: number) => (
+                    <NavLink to={`/post/${post?._id}`} key={`${post._id}_${index}`}>
+                        <img src={post?.images?.[0]} alt="img"/>
+                        <div className={s.info}>
                                 <span>
                                     <AiOutlineHeart/>
                                     {post?.likes.length}
                                 </span>
-                                  <span>
+                            <span>
                                 <BiMessageRounded/>
-                                      {post?.comments.length}
+                                {post?.comments.length}
                                 </span>
-                              </div>
-                          </NavLink>
-                      ))}
-                  </section>
-                  <div className={s.loadButton}>
-                      {load ? (
-                          <img src={IMAGES.spinner} alt="spinner"/>
-                      ) : <LoadButton
-                          result={profilePosts.result}
-                          handleLoadMore={handleLoadMore}
-                          page={profilePosts.page}
-                          load={load}
-                      />}
-                  </div>
-              </>
-            )}
+                        </div>
+                    </NavLink>
+                ))}
+            </section>
+            <div className={s.loadButton}>
+                {load ? (
+                    <img src={IMAGES.spinner} alt="spinner"/>
+                ) : <LoadButton
+                    result={profilePosts.result}
+                    handleLoadMore={handleLoadMore}
+                    page={profilePosts.page}
+                    load={load}
+                />}
+            </div>
         </>
     );
 };

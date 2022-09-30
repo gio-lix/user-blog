@@ -6,16 +6,18 @@ import AuthLayout from "./layout/AuthLayout";
 import Login from "./pages/account/login";
 import Register from "./pages/account/register";
 import Notify from "./components/notify";
-import {useAppDispatch} from "./redux/store";
+import {RootState, useAppDispatch, useAppSelector} from "./redux/store";
 import {refreshDataApi} from "./redux/slices/authSlices";
 import PageRender from "./customRouter/PageRender";
 import PrivateRouter from "./customRouter/PrivateRouter";
 import NotFound from "./components/NotFound";
 import PostPage from "./pages/post/[id]";
+import clsx from "clsx";
 
 
 function App() {
     const dispatch = useAppDispatch()
+    const {theme} = useAppSelector((state:RootState) => state.notify)
     const firstLogin = localStorage.getItem("firstLogin")
 
     useEffect(() => {
@@ -25,7 +27,7 @@ function App() {
     }, [firstLogin, dispatch])
 
     return (
-        <>
+        <main className={clsx('container', theme === "light" ? "dark_theme" : "light_theme")}>
             <Notify/>
             <Routes>
                 <Route path="/" element={<AppLayout/>}>
@@ -42,7 +44,7 @@ function App() {
                 </Route>
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
-        </>
+        </main>
     );
 }
 

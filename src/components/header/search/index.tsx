@@ -7,9 +7,11 @@ import {UserState} from "../../../typing";
 import {NavLink} from "react-router-dom";
 import UserCard from "../../userCard";
 import {IMAGES} from "../../../images";
+import clsx from "clsx";
 
 const Search = () => {
     const {token} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
     const usersRef = useRef<HTMLDivElement | null>(null)
     const [search, setSearch] = useState<string>()
     const [focus, setFocus] = useState(false)
@@ -62,7 +64,9 @@ const Search = () => {
 
 
     return (
-        <form className={s.search}>
+        <form className={clsx(s.search,
+                theme === "light" && s.search_dark
+            )}>
             <input
                 type="text"
                 value={search || ""}

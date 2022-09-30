@@ -1,5 +1,6 @@
 @import "reset";
 @import "variables";
+@import "theme";
 @import "components/all";
 
 body {
@@ -9,17 +10,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
   background-color: $bg-white;
-}
 
+}
 
 
 .main-container {
   max-width: 1000px;
   width: 100%;
+  min-height: 100vh;
   margin: auto;
+}
 
+.container {
+  width: 100%;
+  min-height: 100vh;
 }
 
 .notFound {
