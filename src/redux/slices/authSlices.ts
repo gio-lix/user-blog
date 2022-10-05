@@ -1,13 +1,15 @@
 import axios from "axios";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import {UserState} from "../../typing";
 import {setNotify} from "./notifySlices";
 
-
+interface User extends UserState {
+    saved: string[]
+}
 
 const initialState = {
     status: "loaded",
-    user: null as UserState | null,
+    user: {} as User ,
     users: [] as any | [],
     profilePosts: {
         posts: [] as any | [],
@@ -20,7 +22,6 @@ const initialState = {
     token: null
 }
 type State = typeof initialState
-
 
 export const postDataApi = createAsyncThunk<Object, any>(
     "auth/fetchUserData",
@@ -69,8 +70,6 @@ export const postProfileDataApi = createAsyncThunk<Object, any>(
             return thunkAPI.rejectWithValue(err)
         }
     })
-
-
 export const postProfilePosts = createAsyncThunk<Object, any>(
     "auth/postProfilePosts",
     async (params, thunkAPI) => {
@@ -92,11 +91,11 @@ const authSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        setFollowers: (state: State, action: any) => {
-            state.profile = action.payload
+        setFollowers: (state: State, {payload}: any) => {
+            state.profile = payload
         },
-        setFollowing: (state: State, action: any) => {
-            state.user = action.payload
+        setFollowing: (state: State, {payload}: any) => {
+            state.user = payload
         },
         setProfileUsers: (state: State, action: any) => {
             state.ids.push(action.payload._id)
@@ -106,6 +105,17 @@ const authSlice = createSlice({
             state.profilePosts.posts = [...state.profilePosts.posts, ...action.payload.post]
             state.profilePosts.result = state.profilePosts.result + action.payload.result
             state.profilePosts.page = state.profilePosts.page + 1
+        },
+
+        setSavePosts: (state: State, {payload}: any) => {
+            if (state.user.saved) {
+                state.user.saved = [...state.user.saved,payload.postId]
+            } else {
+                state.user.saved = [payload.postId]
+            }
+        },
+        setRemovePosts: (state: State, {payload}: any) => {
+            state.user.saved = state.user.saved.filter(e => e !== payload.postId)
         }
 
     },
@@ -120,7 +130,7 @@ const authSlice = createSlice({
                 state.user = payload.user
                 state.status = "loaded"
             })
-            .addCase(postDataApi.rejected, (state: State, {payload}: any) => {
+            .addCase(postDataApi.rejected, (state: State) => {
                 state.status = "loaded"
             })
 
@@ -168,5 +178,5 @@ const authSlice = createSlice({
 });
 
 
-export const {setFollowers, setFollowing,setProfileUsers, setProfilePosts} = authSlice.actions
+export const {setFollowers, setFollowing,setProfileUsers, setProfilePosts,setSavePosts, setRemovePosts} = authSlice.actions
 export const authReducer = authSlice.reducer

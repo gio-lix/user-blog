@@ -18,8 +18,6 @@ const Toast: FC<Props> = ({handleShow, message, bgColor}) => {
     }
 
 
-
-
     return (
         <section className={s.root}>
             {message.body.length !== 0 && (

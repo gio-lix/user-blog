@@ -13,11 +13,12 @@ import PrivateRouter from "./customRouter/PrivateRouter";
 import NotFound from "./components/NotFound";
 import PostPage from "./pages/post/[id]";
 import clsx from "clsx";
-
+import SocketClient from "./SocketClient";
 
 function App() {
     const dispatch = useAppDispatch()
     const {theme} = useAppSelector((state:RootState) => state.notify)
+    const {token} = useAppSelector((state:RootState) => state.auth)
     const firstLogin = localStorage.getItem("firstLogin")
 
     useEffect(() => {
@@ -26,9 +27,12 @@ function App() {
         }
     }, [firstLogin, dispatch])
 
+
+
     return (
         <main className={clsx('container', theme === "light" ? "dark_theme" : "light_theme")}>
             <Notify/>
+            {token && <SocketClient />}
             <Routes>
                 <Route path="/" element={<AppLayout/>}>
                     <Route path="login" element={<Login/>}/>

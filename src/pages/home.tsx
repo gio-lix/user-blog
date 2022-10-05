@@ -6,6 +6,7 @@ import {IMAGES} from "../images";
 import {getPosts, setLoadPosts} from "../redux/slices/postsSlice";
 import axios from "axios";
 import LoadButton from "../components/LoadButton";
+import RightSideBar from "../components/rightSide_bar/rightsideBar";
 
 const Home = () => {
     const {result, status, pages} = useAppSelector((state:RootState) => state.posts)
@@ -40,13 +41,14 @@ const Home = () => {
 
     return (
         <main>
-            <>
-                <Status />
-                {(result === 0 && status === "loaded") ? <h1>No Posts</h1> : (
-
-                    <Posts />
-                )}
-            </>
+            <Status />
+            <div className="grid_home">
+                    {(result === 0 && status === "loaded")
+                        ? <h1>No Posts</h1>
+                        : <Posts />
+                    }
+                <RightSideBar />
+            </div>
             <div className="spinner_center">
                 {loading ? (
                     <img src={IMAGES.spinner} alt="spinner"/>

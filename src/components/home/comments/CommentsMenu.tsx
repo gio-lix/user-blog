@@ -21,10 +21,15 @@ const CommentsMenu: FC<Props> = ({comment, post, auth, setOnEdit}) => {
     const dispatch = useAppDispatch()
     const {token} = useAppSelector((state: RootState) => state.auth)
     const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {socket} = useAppSelector((state: RootState) => state.socket)
+
 
     const onHandleRemove = async () => {
+
         if (post.user._id === auth._id || comment.user._id === auth._id) {
             dispatch(setCommentRemove({postId: post._id, commentId: comment._id}))
+            socket.emit("removeComment", {comment, post})
+
             try {
                 await axios.delete(`/api/comment/${comment._id}`, {
                     headers: {

@@ -18,13 +18,13 @@ const PostCart:FC<Props> = ({post}) => {
     const {pathname} = useLocation()
     const {id} = useParams()
 
+
     return (
         <div
-
             className={clsx("post_cart", pathname === `/post/${id}` && "post_cart_id",
                 theme === "light" ? "background_theme" : "light_theme"
                 )}>
-            <CartHeader post={post} />
+            <CartHeader post={post}/>
             <CartBody post={post} />
             <CartFooter post={post} />
             <Comments post={post}/>

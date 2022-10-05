@@ -1,16 +1,27 @@
-import {combineReducers, configureStore} from "@reduxjs/toolkit";
+import {combineReducers, configureStore, getDefaultMiddleware} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {authReducer} from "./slices/authSlices"
 import {postsReducer} from "./slices/postsSlice"
 import {notifyReducer} from "./slices/notifySlices"
+import {savedPostsReducer} from "./slices/postSavedSlice";
+import {socketReducer} from "./slices/socketSlice";
+
 
 const rootReducer = combineReducers({
     auth: authReducer,
     posts: postsReducer,
-    notify: notifyReducer
+    savedPosts: savedPostsReducer,
+    notify: notifyReducer,
+    socket: socketReducer
 })
 
-const store = configureStore({reducer: rootReducer})
+const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false
+    }),
+
+})
 
 export type RootState = ReturnType<typeof store.getState>
 export type AddDispatch = typeof store.dispatch

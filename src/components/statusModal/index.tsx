@@ -13,7 +13,7 @@ import clsx from "clsx";
 const StatusModal = () => {
     const dispatch = useAppDispatch()
     const {theme} = useAppSelector((state:RootState) => state.notify)
-    const {user, token} = useAppSelector((state: RootState) => state.auth)
+    const {user, token, profile} = useAppSelector((state: RootState) => state.auth)
     const {edit} = useAppSelector((state: RootState) => state.posts)
     const [content, setContent] = useState<string>("")
     const [images, setImages] = useState<any>([])
@@ -81,7 +81,7 @@ const StatusModal = () => {
         e.preventDefault()
         let err = ""
         let media: string[] = []
-
+        setLoading(true)
 
         for (let img of images) {
             if (img.camera) {
@@ -98,7 +98,7 @@ const StatusModal = () => {
             return dispatch(setNotify({error: [{msg: "Please add photo!"}]}))
         } else {
             dispatch(setNotifyReset())
-            setLoading(true)
+
         }
 
 
@@ -128,7 +128,6 @@ const StatusModal = () => {
         dispatch(setModal(false))
         dispatch(setEdit(null))
     }
-
 
 
     return (

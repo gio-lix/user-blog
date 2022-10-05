@@ -13,6 +13,8 @@ interface Props extends UserState{
 const UserCard:FC<Props> = ({_id,username,avatar,children,handleLink,className}) => {
     const {theme} = useAppSelector((state:RootState) => state.notify)
 
+
+
     return (
         <section className={clsx(s.user, className ? className : "",
             theme === "light" && s.user_theme

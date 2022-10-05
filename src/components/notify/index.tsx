@@ -8,8 +8,6 @@ const Notify = () => {
     const {notify} = useAppSelector((state: RootState) => state.notify)
 
 
-
-
     return (
         <div>
             {(notify.error ) &&

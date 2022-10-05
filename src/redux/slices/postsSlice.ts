@@ -10,7 +10,8 @@ const initialState = {
     edit: null as PostsState | null,
     posts: [] as PostsState[],
     post: null as PostsState | any,
-    discoveryPosts:  {
+    postSaved: [] as any,
+    discoveryPosts: {
         posts: [] as PostsState[],
         result: 0,
         page: 2
@@ -109,7 +110,6 @@ export const getPostApi = createAsyncThunk<Object, any>(
         }
     }
 )
-
 export const getDiscoveryPostApi = createAsyncThunk<Object, any>(
     "post/getDiscoveryPostApi",
     async (params, {dispatch}) => {
@@ -152,8 +152,10 @@ const postsSlice = createSlice({
             state.post?._id === postId && state.post?.comments.push(newComment)
         },
         setLikes: (state: State, action: any) => {
-
             const findIndex = state.posts.findIndex(e => e._id === action.payload.postId)
+
+            // let find =  state.posts[findIndex].likes.find(e => e === action.payload.userId)
+
             state.posts[findIndex].likes.push(action.payload.userId)
 
             state.post?._id === action.payload.postId && state.post?.likes.unshift(action.payload.userId)
@@ -209,12 +211,15 @@ const postsSlice = createSlice({
             state.discoveryPosts.result = state.discoveryPosts.result + payload.result
             state.discoveryPosts.page = state.discoveryPosts.page + 1
         },
-        setCommentRemove: (state:State, {payload}: any) => {
+        setCommentRemove: (state: State, {payload}: any) => {
             let findPostIdx = state.posts.findIndex(post => post._id === payload.postId)
             state.posts[findPostIdx].comments = state.posts[findPostIdx].comments.filter(el => el._id !== payload.commentId)
-        }},
+        },
+        deletePost: (state: State, {payload}: any) => {
+            state.posts = state.posts.filter(post => post._id !== payload)
+        }
 
-
+    },
 
     extraReducers: (builder) => {
         builder
@@ -236,7 +241,7 @@ const postsSlice = createSlice({
                 state.posts.splice(findIndex, 1, payload.newPost)
                 state.status = "loaded"
 
-                if (state.post?._id === payload.newPost._id ) {
+                if (state.post?._id === payload.newPost._id) {
                     state.post = payload.newPost
                 }
 
@@ -299,7 +304,7 @@ export const {
     setCommentUnLike,
     setCommentRemove,
     setDiscoveryPosts,
-    setUpdateDiscoveryPosts,
+    deletePost,
     setLoadPosts
 } = postsSlice.actions
 

@@ -14,7 +14,7 @@ interface CommentProps extends CommentState {
 const Comments: FC<Props> = ({post}) => {
     const [comments, setComments] = useState<CommentState[]>([])
     const [showComments, setShowComments] = useState<CommentState[]>([])
-    const [next, setNext] = useState(2)
+    const [next, setNext] = useState<number>(2)
     const [replyComment, setReplyComment] = useState<CommentState[]>([])
 
 

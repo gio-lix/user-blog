@@ -1,0 +1,26 @@
+@import "src/styles/variables";
+
+.profile_tag {
+  display: flex;
+  justify-content: center;
+  height: 38px;
+  border-top: 1px solid #bdbdbd;
+  border-bottom: 1px solid #bdbdbd;
+  margin-bottom: 20px ;
+  > button {
+    border: transparent;
+    width: 100px;
+    cursor: pointer;
+    background: none;
+    height: 100%;
+    margin: 0 20px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.active_tag {
+  border-top: 1.5px solid $blue-500!important;
+  border-bottom: 1.5px solid $blue-500!important;
+
+}

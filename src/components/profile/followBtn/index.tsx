@@ -19,9 +19,10 @@ const FollowBtn: FC<Props> = ({user}) => {
 
 
     useEffect(() => {
-        if (auth?.following?.includes(user?._id as string)) {
+        if (auth?.following?.includes(user?._id as string) ) {
             setFollow(true)
         }
+
         return () => setFollow(false)
     }, [user?._id, auth?.following])
 
@@ -32,11 +33,12 @@ const FollowBtn: FC<Props> = ({user}) => {
 
         setLoading(true)
         try {
-            await axios.put(`/api/user/${user._id}/follow`, null, {
+            const {data} = await axios.put(`/api/user/${user._id}/follow`, null, {
                 headers: {
                     'Authorization': `${token}`
                 }
             })
+
             dispatch(setFollowers(newUser))
             dispatch(setFollowing(newAuth))
             setFollow(true)

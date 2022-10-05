@@ -1,7 +1,9 @@
 @import "reset";
 @import "variables";
 @import "theme";
+@import "flex";
 @import "components/all";
+
 
 body {
   margin: 0;
@@ -48,3 +50,5 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+

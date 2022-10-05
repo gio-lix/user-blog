@@ -6,7 +6,6 @@ import s from "./Info.module.scss"
 
 import {postProfileDataApi, postProfilePosts, setProfileUsers} from "../../../redux/slices/authSlices";
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
-import {setNotify} from "../../../redux/slices/notifySlices";
 import EditProfile from "../editProfile";
 import FollowBtn from "../followBtn";
 import Followers from "../followers";

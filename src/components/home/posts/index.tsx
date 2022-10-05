@@ -12,14 +12,11 @@ const Posts = () => {
         setPostData(posts)
     }, [posts, status])
 
-
-
     return (
         <section>
             {postData?.map((post: PostsState, index) => (
                 <PostCart key={`${post._id}_${index}`} post={post}/>
             ))}
-
         </section>
     );
 };

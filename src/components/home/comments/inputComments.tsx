@@ -18,6 +18,7 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
     const [content, setContent] = useState("")
     const {user, token} = useAppSelector((state: RootState) => state.auth)
     const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {socket} = useAppSelector((state: RootState) => state.socket)
 
 
     const handleSubmit = async (e: SyntheticEvent) => {
@@ -48,6 +49,7 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
                 }
             })
             dispatch(setComments({postId: post?._id, newComment: data.newComment}))
+            socket.emit("createComment", {postId: post?._id, newComment: data.newComment})
         } catch (err) {
             console.log("err - ", err)
         }

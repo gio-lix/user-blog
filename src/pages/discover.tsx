@@ -12,8 +12,6 @@ const Discover = () => {
     const [loading, setLoading] = useState("loading")
 
 
-
-
     useEffect(() => {
         (async () => {
             setLoading("loading")

@@ -18,7 +18,7 @@ interface Props {
 const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
     const navigate = useNavigate()
     const {user: auth, token} = useAppSelector((state: RootState) => state.auth)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [currentUser, setCurrentUser] = useState<UserState[]>([])
 
     useEffect(() => {

@@ -1,21 +1,26 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {PostsState} from "../../../../typing";
 import s from "./PostCard.module.scss"
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import moment from "moment";
 import {HiDotsHorizontal} from "react-icons/hi"
 import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
 import {GoPencil} from "react-icons/go"
 import {AiFillDelete, AiOutlineCopy} from "react-icons/ai"
-import {setEdit, setModal} from "../../../../redux/slices/postsSlice";
+import {deletePost, setEdit, setModal} from "../../../../redux/slices/postsSlice";
 import clsx from "clsx";
+import axios from "axios";
+import {BASE_URL} from "../../../../utils/config";
 
 interface Props {
     post: PostsState
+
 }
 
 const CartHeader: FC<Props> = ({post}) => {
-    const {user} = useAppSelector((state: RootState) => state.auth)
+    const {pathname,} = useLocation()
+    const navigate = useNavigate()
+    const {user,token} = useAppSelector((state: RootState) => state.auth)
     const {theme} = useAppSelector((state:RootState) => state.notify)
     const dispatch = useAppDispatch()
     const [drop, setDrop] = useState<boolean>(false)
@@ -30,14 +35,35 @@ const CartHeader: FC<Props> = ({post}) => {
         window.addEventListener("click", handleClickRef)
         return () => window.removeEventListener("click", handleClickRef)
     }, [useInfoRef.current])
-
-
     const handleEditPost = () => {
         setDrop(false)
         dispatch(setModal(true))
         dispatch(setEdit(post))
     }
 
+    const handleDelete = async (id: string) => {
+        let path = pathname  === `/post/${id}`
+        dispatch(deletePost(id))
+        if (path) {
+            navigate("/")
+        }
+
+        try {
+            const {data} = await axios.delete(`/api/post/${id}`, {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            })
+            console.log("data - - ", data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(`${BASE_URL}/post/${post._id}`)
+        setDrop(false)
+    }
 
     return (
         <div className={s.header}>
@@ -63,18 +89,40 @@ const CartHeader: FC<Props> = ({post}) => {
                 <span className={clsx(theme === "light" ? s.dropDown_black : s.dropDown )} onClick={() => setDrop(!drop)}>
                     <HiDotsHorizontal/>
                 </span>
-                {(drop && user?._id === post?.user._id) && (
+                {/*{(drop && user?._id === post?.user._id) && (*/}
+                {/*    <div className={clsx(s.header_drop_menu,*/}
+                {/*        theme === "light" && s.dark_theme*/}
+                {/*    )}>*/}
+                {/*        <>*/}
+                {/*            <div onClick={handleEditPost}>*/}
+                {/*                <GoPencil/> Edit Post*/}
+                {/*            </div>*/}
+                {/*            <div onClick={() => handleDelete(post._id)}>*/}
+                {/*                <AiFillDelete/> Remove Post*/}
+                {/*            </div>*/}
+                {/*            <div onClick={() => handleCopy()}>*/}
+                {/*                <AiOutlineCopy/> copy Post*/}
+                {/*            </div>*/}
+                {/*        </>*/}
+                {/*    </div>*/}
+                {/*)}*/}
+                {drop && (
                     <div className={clsx(s.header_drop_menu,
                         theme === "light" && s.dark_theme
                     )}>
                         <>
-                            <div onClick={handleEditPost}>
-                                <GoPencil/> Edit Post
-                            </div>
-                            <div>
-                                <AiFillDelete/> Remove Post
-                            </div>
-                            <div>
+                            {user?._id === post?.user._id && (
+                                <>
+                                    <div onClick={handleEditPost}>
+                                        <GoPencil/> Edit Post
+                                    </div>
+                                    <div onClick={() => handleDelete(post._id)}>
+                                        <AiFillDelete/> Remove Post
+                                    </div>
+                                </>
+                            )}
+
+                            <div onClick={() => handleCopy()}>
                                 <AiOutlineCopy/> copy Post
                             </div>
                         </>

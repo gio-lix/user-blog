@@ -221,7 +221,7 @@
 // footer
 .footer {
   width: 90%;
-  height: 70px;
+  min-height: 70px;
   margin: 0 auto;
   padding: 10px;
   display: flex;
@@ -233,6 +233,9 @@
     justify-content: space-between;
     font-size: $font-lg-20;
 
+    .book_marker {
+      cursor: pointer;
+    }
 
     .footer_icon {
       > span {
@@ -246,6 +249,7 @@
       }
     }
   }
+
 
   > div:last-child {
     display: flex;

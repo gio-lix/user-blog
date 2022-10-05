@@ -60,7 +60,10 @@
   width: 100px;
 
   > img {
-    width: 30px;
+    width: 35px!important;
+    height: 35px!important;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   > span {
