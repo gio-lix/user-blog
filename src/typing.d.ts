@@ -48,7 +48,18 @@ export interface PostsState {
     }
 }
 
-
+export interface NotifyPostsState {
+    _id: string
+    content: string
+    createdAt: string
+    id: string
+    image: string
+    isRead: boolean
+    recipients: string[]
+    text: string
+    url: string
+    user: UserState
+}
 
 
 

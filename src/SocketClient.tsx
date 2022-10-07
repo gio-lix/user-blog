@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {RootState, useAppDispatch, useAppSelector} from "./redux/store";
 import {setCommentRemove, setComments, setLikes, setUnLikes} from "./redux/slices/postsSlice";
+import {setDeletePostNotify, setPostNotify} from "./redux/slices/postNotifySlice";
 
 const SocketServer = () => {
     const dispatch = useAppDispatch()
@@ -44,6 +45,19 @@ const SocketServer = () => {
     }, [socket, dispatch])
 
 
+    useEffect(() => {
+        socket.on("notifyToClient", (notify: any) => {
+            dispatch(setPostNotify(notify))
+        })
+        return () => socket.off("notifyToClient")
+    }, [socket, dispatch])
+
+    useEffect(() => {
+        socket.on("removeNotifyToClient", (notify: any) => {
+            dispatch(setDeletePostNotify(notify))
+        })
+        return () => socket.off("removeNotifyToClient")
+    }, [socket, dispatch])
 
 
     return (

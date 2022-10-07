@@ -1,10 +1,11 @@
-import {combineReducers, configureStore, getDefaultMiddleware} from "@reduxjs/toolkit";
+import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {authReducer} from "./slices/authSlices"
 import {postsReducer} from "./slices/postsSlice"
 import {notifyReducer} from "./slices/notifySlices"
 import {savedPostsReducer} from "./slices/postSavedSlice";
 import {socketReducer} from "./slices/socketSlice";
+import {postNotifySliceReducer} from "./slices/postNotifySlice";
 
 
 const rootReducer = combineReducers({
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     posts: postsReducer,
     savedPosts: savedPostsReducer,
     notify: notifyReducer,
-    socket: socketReducer
+    socket: socketReducer,
+    postNotify: postNotifySliceReducer
 })
 
 const store = configureStore({

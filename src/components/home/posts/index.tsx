@@ -2,6 +2,7 @@ import React, {useEffect,  useState} from 'react';
 import {RootState,  useAppSelector} from "../../../redux/store";
 import {PostsState} from "../../../typing";
 import PostCart from "../../PostCart";
+import {IMAGES} from "../../../images";
 
 
 const Posts = () => {
@@ -12,11 +13,20 @@ const Posts = () => {
         setPostData(posts)
     }, [posts, status])
 
+
     return (
         <section>
-            {postData?.map((post: PostsState, index) => (
-                <PostCart key={`${post._id}_${index}`} post={post}/>
-            ))}
+            {status === "loading" ? (
+                <div className="loading_spinner">
+                    <img src={IMAGES.spinner} alt="spinner"/>
+                </div>
+            ) : (
+                <>
+                    {postData?.map((post: PostsState, index) => (
+                        <PostCart key={`${post._id}_${index}`} post={post}/>
+                    ))}
+                </>
+            )}
         </section>
     );
 };

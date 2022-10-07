@@ -35,11 +35,11 @@ export const createPosts = createAsyncThunk<Object, any>(
                     'Authorization': `${token}`
                 }
             })
+
             dispatch(setNotify({success: [{msg: data.msg}]}))
             return data
         } catch (err) {
-            return dispatch(setNotify({error: [(err as any).response.data]}))
-
+            console.log("err - ", err)
         }
     }
 )

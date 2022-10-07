@@ -38,7 +38,7 @@ const FollowBtn: FC<Props> = ({user}) => {
                     'Authorization': `${token}`
                 }
             })
-
+            console.log("data - ", data)
             dispatch(setFollowers(newUser))
             dispatch(setFollowing(newAuth))
             setFollow(true)

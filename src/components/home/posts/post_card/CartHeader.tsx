@@ -11,6 +11,7 @@ import {deletePost, setEdit, setModal} from "../../../../redux/slices/postsSlice
 import clsx from "clsx";
 import axios from "axios";
 import {BASE_URL} from "../../../../utils/config";
+import {setDeletePostNotify} from "../../../../redux/slices/postNotifySlice";
 
 interface Props {
     post: PostsState
@@ -22,6 +23,7 @@ const CartHeader: FC<Props> = ({post}) => {
     const navigate = useNavigate()
     const {user,token} = useAppSelector((state: RootState) => state.auth)
     const {theme} = useAppSelector((state:RootState) => state.notify)
+    const {socket} = useAppSelector((state:RootState) => state.socket)
     const dispatch = useAppDispatch()
     const [drop, setDrop] = useState<boolean>(false)
     const useInfoRef = useRef<HTMLDivElement | null>(null)
@@ -54,7 +56,36 @@ const CartHeader: FC<Props> = ({post}) => {
                     'Authorization': `${token}`
                 }
             })
-            console.log("data - - ", data)
+            if (data) {
+                const msg = {
+                    id: data.post._id,
+                    recipients: data.post.user.followers,
+                    url: `/post/${data.post._id}`,
+                    text: "added a new post.",
+                    content: data.post.content,
+                    image: data.post.images[0]
+                }
+                try {
+                    const {data} = await axios.delete(`/api/notify/${msg.id}?url=${msg.url}`, {
+                        headers: {
+                            'Authorization': `${token}`
+                        }
+                    })
+                    socket.emit("removeNotify", {
+                        ...data.notify,
+                        user: {
+                            id: user._id,
+                            username: user.username,
+                            avatar: user.avatar
+                        }
+                    })
+                    // dispatch(setDeletePostNotify(data.notify))
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+
+
         } catch (err) {
             console.log(err)
         }

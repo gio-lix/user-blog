@@ -7,6 +7,38 @@
     display: flex;
     height: 100%;
 
+    .heart {
+      position: relative;
+
+      > span:first-child {
+        cursor: pointer;
+        font-size: 28px;
+        color: red;
+      }
+
+      > span:nth-child(2) {
+        position: absolute;
+        z-index: 20;
+        bottom: 10px;
+        right: 10px;
+        font-size: $font-md-16;
+        color: $black;
+      }
+
+      > div:last-child {
+        position: absolute;
+        top: 65px;
+        right: 0;
+        width: 500px;
+        min-height: 50px;
+        padding: 10px 10px;
+        border: 1px solid $gray-light-150;
+        box-shadow: 2px 4px 12px -4px rgba(184, 184, 184, 1);
+        background-color: $bg-white;
+
+      }
+    }
+
     > li {
       display: flex;
       min-width: 60px;
@@ -15,22 +47,24 @@
       margin-right: 5px;
       color: $gray-light-500;
 
+
       .homo {
         font-weight: 600;
-        font-size: 15px;
+        font-size: $font-md-15;
       }
     }
 
     .icons {
-      font-size: 24px;
+      font-size: $font-lg-25;
       color: $gray-light-500;
+
       &:hover {
-        color: $gray-light-900;
+        color: $gray-light-600;
       }
     }
 
     .active {
-      color: black;
+      color: $black;
     }
   }
 }
@@ -39,19 +73,19 @@
 .menu_dark {
   > ul {
     .icons {
-      color: #cbcbcb !important;
+      color: $gray-light-200 !important;
+
       &:hover {
-        color: greenyellow!important;
+        color: $green-yellow-600 !important;
       }
     }
+
     .active {
-      color: greenyellow!important;
+      color: $green-yellow-600 !important;
     }
   }
 
 }
-
-
 
 
 .drop {
@@ -60,8 +94,8 @@
   width: 100px;
 
   > img {
-    width: 35px!important;
-    height: 35px!important;
+    width: 35px !important;
+    height: 35px !important;
     object-fit: cover;
     border-radius: 50%;
   }
@@ -94,7 +128,7 @@
     display: flex;
     flex-direction: column;
     background: $bg-white;
-    box-shadow: 2px 4px 12px -4px rgba(184,184,184,1);
+    box-shadow: 2px 4px 12px -4px rgba(184, 184, 184, 1);
 
 
     > a, button {
@@ -115,7 +149,7 @@
     }
 
     > a:last-child {
-      border-top: 1px solid gray;
+      border-top: 1px solid $gray-light-500;
     }
   }
 
@@ -123,10 +157,11 @@
 
 .drop_theme {
   background-color: #49465e !important;
-  box-shadow: 2px 4px 12px -4px rgb(5, 5, 5)!important;
+  box-shadow: 2px 4px 12px -4px rgb(5, 5, 5) !important;
 
   a, button {
-    color: white!important;
+    color: $white !important;
+
     &:hover {
       background-color: #646279 !important;
     }

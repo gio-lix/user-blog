@@ -5,7 +5,7 @@ import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
 import StatusModal from "../components/statusModal";
 import io from "socket.io-client";
 import {setSocket} from "../redux/slices/socketSlice";
-import SocketClient from "../SocketClient";
+import {getNotifiesApi} from "../redux/slices/postNotifySlice";
 
 
 const AuthLayout = () => {
@@ -20,6 +20,8 @@ const AuthLayout = () => {
     useEffect(() => {
         if (firstLogin === null && !token) {
             navigate("/login")
+        } else if (token) {
+            dispatch(getNotifiesApi({token}))
         }
     },[firstLogin, token, navigate])
 

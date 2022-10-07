@@ -1,29 +1,40 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Link, NavLink, useLocation, useNavigate} from "react-router-dom";
 import {AiFillCaretRight, AiFillHome} from "react-icons/ai";
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import {TiLocationArrow} from "react-icons/ti";
 import {RiCompassDiscoverFill} from "react-icons/ri";
 import {IoMdNotificationsOff} from "react-icons/io";
+import {AiTwotoneHeart} from "react-icons/ai";
 import axios from "axios";
 import s from "./Menu.module.scss"
 import {setTheme} from "../../../redux/slices/notifySlices";
 import clsx from "clsx";
+import NotifyModel from "../../NotifyModel";
+
+
+
+
+const navLink = [
+    {label: "Home", Icon: <AiFillHome />, path: "/"},
+    {label: "Message", Icon: <TiLocationArrow />, path: "/message"},
+    {label: "discover", Icon: <RiCompassDiscoverFill />, path: "/discover"},
+    {label: "Notify", Icon: <IoMdNotificationsOff />, path: "/notify"},
+]
 
 const Menu = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const {pathname} = useLocation()
+    const useNotifyRef = useRef<HTMLLIElement | null>(null)
     const {user, token} = useAppSelector((state: RootState) => state.auth)
+    const {posts} = useAppSelector((state: RootState) => state.postNotify)
     const {theme} = useAppSelector((state: RootState) => state.notify)
 
+    const [postNotifyToggle, setPostNotifyToggle] = useState(false)
 
-    const navLink = [
-        {label: "Home", Icon: <AiFillHome />, path: "/"},
-        {label: "Message", Icon: <TiLocationArrow />, path: "/message"},
-        {label: "discover", Icon: <RiCompassDiscoverFill />, path: "/discover"},
-        {label: "Notify", Icon: <IoMdNotificationsOff />, path: "/notify"},
-    ]
+
+
 
     const handleLogout = async () => {
         try {
@@ -34,10 +45,22 @@ const Menu = () => {
             console.log("err - ")
         }
     }
-
     const isActive = (pn: string) => {
         if (pn === pathname ) return s.active
     }
+
+    const handleClick = (e: any) => {
+        if (!e.path.includes(useNotifyRef.current)) {
+            setPostNotifyToggle(false)
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener("click", handleClick)
+        return () => window.removeEventListener("click", handleClick)
+    },[useNotifyRef.current])
+
+
 
     const onHandleTheme = () => {
         if (theme === "light") {
@@ -52,6 +75,7 @@ const Menu = () => {
 
     return (
         <>
+
             <nav className={clsx(s.menu,
                     theme === "light" && s.menu_dark
                 )}>
@@ -63,8 +87,18 @@ const Menu = () => {
                             </NavLink>
                         </li>
                     ))}
-                    <li>
-                        <h5 className={s.homo}>HOME</h5>
+                    <li className={s.heart} >
+                        <span ref={useNotifyRef} onClick={() => setPostNotifyToggle(!postNotifyToggle)}>
+                            <AiTwotoneHeart />
+                        </span>
+                        <span>
+                            {posts.length}
+                        </span>
+                        {postNotifyToggle && (
+                            <div>
+                                <NotifyModel />
+                            </div>
+                        )}
                     </li>
                     <li  className={s.drop}>
                         {token ? <img style={{opacity:".5"}} src={user?.avatar} alt="avatar"/> : "user"}

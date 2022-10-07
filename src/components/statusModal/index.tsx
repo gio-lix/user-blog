@@ -5,19 +5,21 @@ import s from "./StatusModal.module.scss"
 import {imageUpload} from "../../utils/ImageUploaded";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {createPosts, setEdit, setModal, updatePosts} from "../../redux/slices/postsSlice";
-import {setNotify,  setNotifyReset} from "../../redux/slices/notifySlices";
+import {setNotify, setNotifyReset} from "../../redux/slices/notifySlices";
 import {IMAGES} from "../../images";
 import clsx from "clsx";
-
+import {fetchDataApi} from "../../api/postDataApi";
 
 const StatusModal = () => {
     const dispatch = useAppDispatch()
-    const {theme} = useAppSelector((state:RootState) => state.notify)
-    const {user, token, profile} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {user, token} = useAppSelector((state: RootState) => state.auth)
     const {edit} = useAppSelector((state: RootState) => state.posts)
+    const {socket} = useAppSelector((state: RootState) => state.socket)
     const [content, setContent] = useState<string>("")
-    const [images, setImages] = useState<any>([])
-    const [stream, setStream] = useState(false)
+    const [images, setImages] = useState<any[]>([])
+    const [stream, setStream] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [tracks, setTracks] = useState<any>()
     const useVideoRef = useRef<any>()
     const useCanvasRef = useRef<any>()
@@ -75,7 +77,6 @@ const StatusModal = () => {
         setStream(false)
     }
 
-    const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault()
@@ -94,6 +95,7 @@ const StatusModal = () => {
                 err = error
             }
         }
+
         if (media.length === 0) {
             return dispatch(setNotify({error: [{msg: "Please add photo!"}]}))
         } else {
@@ -103,12 +105,46 @@ const StatusModal = () => {
 
 
         if (edit) {
-            const data = await dispatch(updatePosts({content, images: media, user, id: edit._id, token}))
-            if ((data as any).meta.requestStatus === "fulfilled") setLoading(false)
+            await dispatch(updatePosts({content, images: media, user, id: edit._id, token}))
         } else {
             const data = await dispatch(createPosts({content, images: media, user, token}))
-            if ((data as any).meta.requestStatus === "fulfilled") setLoading(false)
+
+            if (data) {
+
+                let id = (data as any).payload.newPost._id
+                const msg = {
+                    id,
+                    recipients: (data as any).payload.newPost.user.followers,
+                    url: `/post/${id}`,
+                    text: "added a new post.",
+                    content,
+                    image: media[0]
+                }
+                //  const fetchData = await fetchDataApi.postData("notify", token!, {msg})
+
+                try {
+                    // const {data: notifyData} = await axios.post(`/api/notify`, {msg}, {
+                    //     headers: {
+                    //         'Authorization': `${token}`
+                    //     }
+                    // })
+
+
+                    // socket.emit("createNotify", {
+                    //     ...notifyData.notify,
+                    //     user: {
+                    //         id: user._id,
+                    //         username: user.username,
+                    //         avatar: user.avatar
+                    //     }
+                    // })
+                } catch (err) {
+
+                }
+            }
+
         }
+
 
         setContent(" ")
         setImages([])
@@ -132,7 +168,7 @@ const StatusModal = () => {
 
     return (
         <div className={s.modal}>
-            <form onSubmit={handleSubmit} className={clsx(theme === "light" && s.dark_theme )}>
+            <form onSubmit={handleSubmit} className={clsx(theme === "light" && s.dark_theme)}>
                 <div>
                     <h5>Create Posts</h5>
                     <span role="button" onClick={handleClose}>&times;</span>

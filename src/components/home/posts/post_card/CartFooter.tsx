@@ -36,6 +36,25 @@ const CartFooter: FC<Props> = ({post}) => {
                     'Authorization': `${token}`
                 }
             })
+
+
+            const msg = {
+                id: user._id,
+                recipients: [post.user._id],
+                url: `/post/${post?._id}`,
+                text: "like your post.",
+                content: post.content,
+                image: post.images[0]
+            }
+            //   ----------- add like to notification
+            // socket.emit("createNotify", {
+            //     ...msg,
+            //     user: {
+            //         id: user._id,
+            //         username: user.username,
+            //         avatar: user.avatar
+            //     }
+            // })
         } catch (err) {
             dispatch(setNotify({error: [(err as any).response.data]}))
             return
