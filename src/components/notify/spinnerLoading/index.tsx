@@ -1,6 +1,9 @@
 import React from 'react';
-import {IMAGES} from "../../../images";
+
 import s from "./SpinnerLoading.module.scss"
+
+import {IMAGES} from "../../../images";
+
 
 const SpinnerLoading = () => {
     return (

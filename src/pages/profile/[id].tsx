@@ -1,72 +1,83 @@
-import axios from "axios";
 import React, {useEffect, useState} from 'react';
+import {useParams} from "react-router-dom";
+import clsx from "clsx";
+
+import {setProfilePosts, setProfilePostsPosts} from "../../redux/slices/authSlices";
+import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
+import {setAddSavedPosts} from "../../redux/slices/postSavedSlice";
+import {fetchDataApi} from "../../api/postDataApi";
+
 import Info from "../../components/profile/info";
 import Posts from "../../components/profile/posts";
-import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
-import {postProfilePosts, setProfilePosts} from "../../redux/slices/authSlices";
-import {useParams} from "react-router-dom";
 import Saved from "../../components/profile/saved";
-import {setAddSavedPosts} from "../../redux/slices/postSavedSlice";
+
 
 const Profile = () => {
     const {id} = useParams()
     const dispatch = useAppDispatch()
-    const [load, setLoad] = useState(false)
+
+    const {profilePosts, token, user} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {result, page} = useAppSelector((state: RootState) => state.savedPosts)
+
+    const [loading, setLoading] = useState("loaded")
     const [saveTab, setSaveTab] = useState(false)
-    const {profilePosts, status, token, user} = useAppSelector((state: RootState) => state.auth)
-    const {result,page} = useAppSelector((state: RootState) => state.savedPosts)
+    const [load, setLoad] = useState(false)
 
-
-    useEffect(() => {
-        if (token) {
-            dispatch(postProfilePosts({id, token }))
-        }
-    },[token, id])
 
     const handleLoadMore = async () => {
         setLoad(true)
-        try {
-            const {data} = await axios.get(`/api/user_post/${id}?page=${profilePosts.page}`, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-            dispatch(setProfilePosts(data))
-        } catch (err) {
-            console.log(err)
-        } finally {
+        const {success} = await fetchDataApi.getData(`user_post/${id}?page=${profilePosts.page}`, token!)
+        if (success) {
+            dispatch(setProfilePosts(success))
             setLoad(false)
         }
     }
     const handleLoadMoreSavedPost = async () => {
         setLoad(true)
-        try {
-            const {data} = await axios.get(`/api/getSavedPost?page=${profilePosts.page}`, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-            dispatch(setAddSavedPosts({result: data.result, posts: data.savedPosts}))
-        } catch (err) {
-            console.log(err)
-        } finally {
+        const {success} = await fetchDataApi.getData(`getSavedPost?page=${profilePosts.page}`, token!)
+        if (success) {
+            dispatch(setAddSavedPosts({result: success.result, posts: success.savedPosts}))
             setLoad(false)
         }
     }
 
 
+    useEffect(() => {
+        let mounded = true
+        if (!saveTab && mounded) {
+            setLoading("loading")
+            fetchDataApi.getData(`user_post/${id}`, token!)
+                .then(({success}) => dispatch(setProfilePostsPosts(success)))
+                .finally(() => {
+                    setLoading("loaded")
+                })
+        }
+        return () => {
+            mounded = false
+        }
+    }, [saveTab])
+
 
     return (
         <section>
-            <Info  />
-            {user._id === id  && (
+            <Info/>
+            {user._id === id && (
                 <div className='profile_tag'>
                     <button
                         onClick={() => setSaveTab(false)}
-                        className={saveTab ? "" : "active_tag"}>Posts</button>
+                        className={clsx(
+                            saveTab ? "" : `active_tag ${theme === "light" && "profile_tag_theme_button_active"}`,
+                            theme === "light" && "profile_tag_theme_button"
+                        )}>Posts
+                    </button>
                     <button
                         onClick={() => setSaveTab(true)}
-                        className={saveTab ? "active_tag" : ""}>Save</button>
+                        className={clsx(
+                            saveTab ?  `active_tag ${theme === "light" && "profile_tag_theme_button_active"}` : "",
+                            theme === "light" && "profile_tag_theme_button"
+                            )}>Save
+                    </button>
                 </div>
             )}
             {saveTab ? (
@@ -79,10 +90,11 @@ const Profile = () => {
             ) : (
                 <Posts
                     load={load}
-                    status={status}
+                    status={loading}
                     profilePosts={profilePosts}
                     handleLoadMore={handleLoadMore}
                 />
+
             )}
 
         </section>

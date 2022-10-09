@@ -1,9 +1,13 @@
 import React, {FC, SyntheticEvent, useEffect, useState} from 'react';
+import clsx from "clsx";
+
 import s from "./EditProfile.module.scss"
+
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
-import axios from "axios";
 import {imageUpload} from "../../../utils/ImageUploaded";
-import {setNotify} from "../../../redux/slices/notifySlices";
+import {setUpdateUser} from "../../../redux/slices/authSlices";
+import {fetchDataApi} from "../../../api/postDataApi";
+import {IMAGES} from "../../../images";
 
 interface Props {
     setOnEdit: Function
@@ -16,23 +20,28 @@ const initialState = {
     address: "",
     website: "",
     story: "",
-    gender: ""
+    gender: "",
+    avatar: ""
 }
 type State = typeof initialState
 
+
 const EditProfile: FC<Props> = ({setOnEdit, setCount}) => {
     const dispatch = useAppDispatch()
-    const [avatar, setAvatar] = useState<any>()
+
+    const {token, user} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+
+    const [avatarImage, setAvatarImage] = useState<any>()
     const [uploadImage, setUploadImage] = useState<any>()
+    const [imageLoading, setImageLoading] = useState<boolean>(false)
     const [userData, setUserData] = useState<State>(initialState)
-    const {profile, token} = useAppSelector((state: RootState) => state.auth)
-    const {website, address, fullname,mobile, gender, story} = userData
+
+    const {website, address, fullname, mobile, avatar, gender, story} = userData
 
     useEffect(() => {
-        setUserData(profile!)
-    }, [profile])
-
-
+        setUserData(user!)
+    }, [user])
 
 
     const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -40,50 +49,60 @@ const EditProfile: FC<Props> = ({setOnEdit, setCount}) => {
         setUserData({...userData, [name]: value})
     }
 
-
-
     const handleChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
         if (!e.target.files) return
         const file = e.target.files[0]
-        setAvatar(file)
+        setImageLoading(true)
 
-        const {success} = await imageUpload(file)
-
-        setUploadImage((success as any).url)
-
+        try {
+            const {success} = await imageUpload(file)
+            setUploadImage((success as any).url)
+            setImageLoading(false)
+            setAvatarImage(file)
+        } catch (err) {
+            console.log(err)
+        }
     };
 
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault()
 
-        let user = {website, address,avatar : uploadImage, fullname, mobile, gender, story}
+        let user = {website, address, avatar: uploadImage, fullname, mobile, gender, story}
 
         setCount((prev: number) => prev + 1)
-        try {
-            await axios.put(`/api/user`, user, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-        } catch (err) {
-            dispatch(setNotify({error: [(err as any).response.data]}))
+        dispatch(setUpdateUser({user}))
+        const {success} = await fetchDataApi.updateData('user', token!, user)
+        if (success) {
+            setOnEdit(false)
         }
-        setOnEdit(false)
+
     }
 
 
     return (
-        <section className={s.edit}>
-            <button onClick={() => setOnEdit(false)} className={s.close}>&times;</button>
+        <section className={clsx(s.edit, theme === "light" ? s.theme_dark : "" )}>
+            <button
+                onClick={() => setOnEdit(false)}
+                className={s.close}
+            >
+                &times;
+            </button>
             <form onSubmit={handleSubmit}>
                 <div className={s.images_group}>
                     <figure className={s.image}>
-                        <img
-                            src={avatar ? URL.createObjectURL(avatar) : profile?.avatar}
-                            alt="profile"
-                        />
+                        {imageLoading ? (
+                            <div className={s.loading_image}>
+                                <img src={IMAGES.spinner} alt="spinner"/>
+                            </div>
+                        ) : (
+                            <img
+                                src={avatarImage ? URL.createObjectURL(avatarImage) : avatar && avatar}
+                                alt="profile"
+                            />
+                        )}
+
                         {/*<figcaption>Change</figcaption>*/}
                     </figure>
                     <label htmlFor="file" role="button">
@@ -156,13 +175,18 @@ const EditProfile: FC<Props> = ({setOnEdit, setCount}) => {
                 </div>
                 <div>
                     <label htmlFor="gender">Gender</label>
-                    <select onChange={handleChangeInput} value={gender} name="gender" id="gender">
+                    <select
+                        onChange={handleChangeInput}
+                        value={gender}
+                        name="gender"
+                        id="gender"
+                    >
                         <option value="male">male</option>
                         <option value="female">female</option>
                         <option value="other">other</option>
                     </select>
                 </div>
-                <button type="submit" className={s.save_button}>Save</button>
+                <button disabled={imageLoading} type="submit" className={s.save_button}>Save</button>
             </form>
         </section>
     );

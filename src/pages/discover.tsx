@@ -1,33 +1,33 @@
 import React, {useEffect, useState} from 'react';
+
 import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
-import axios from "axios";
-import Posts from "../components/profile/posts";
-import {IMAGES} from "../images";
 import {getDiscoveryPostApi, setDiscoveryPosts} from "../redux/slices/postsSlice";
+import {IMAGES} from "../images";
+import {fetchDataApi} from "../api/postDataApi";
+
+import Posts from "../components/profile/posts";
+
+
 
 const Discover = () => {
     const dispatch = useAppDispatch()
+
     const {token} = useAppSelector((state: RootState) => state.auth)
     const {discoveryPosts, status} = useAppSelector((state:RootState) => state.posts)
+
     const [loading, setLoading] = useState("loading")
 
 
     useEffect(() => {
-        (async () => {
+        let mounted = true
+        if (mounted) {
             setLoading("loading")
-            try {
-                const {data} = await axios.get(`/api/post_discover` ,{
-                    headers: {
-                        'Authorization': `${token}`
-                    }
-                })
-                dispatch(setDiscoveryPosts(data))
-            } catch (err) {
-                console.log(err)
-            } finally {
-                setLoading("loaded")
-            }
-        })()
+            fetchDataApi.getData(`post_discover`, token!)
+                .then(({success}) => dispatch(setDiscoveryPosts(success)))
+                .finally(() => setLoading("loaded"))
+        }
+
+        return () => {mounted = false}
     },[token])
 
     const handleLoadMore = async () => {

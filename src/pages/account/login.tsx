@@ -1,19 +1,24 @@
 import React, {SyntheticEvent, useState} from 'react';
 import clsx from "clsx";
-import FormBox from "../../components/FormBox";
 import {Link} from "react-router-dom";
+
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {postDataApi} from "../../redux/slices/authSlices";
 import {IMAGES} from "../../images";
+
+import FormBox from "../../components/FormBox";
 
 
 
 const Login = () => {
     const dispatch = useAppDispatch()
-    const {theme} = useAppSelector((state:RootState) => state.notify)
-    const [userData, setUserDate] = useState({email: "", password: ""})
-    const [isFocused, setIsFocused] = useState({focus: ""})
-    const [typePass, setTypePass] = useState(false)
+
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+
+    const [userData, setUserDate] = useState<{ email: string, password: string }>({email: "", password: ""})
+    const [isFocused, setIsFocused] = useState<{ focus: string }>({focus: ""})
+    const [typePass, setTypePass] = useState<boolean>(false)
+
     const {email, password} = userData
 
     const handleChange = (e: any) => {
@@ -30,10 +35,10 @@ const Login = () => {
 
     return (
         <main style={{paddingTop: "100px"}}>
-            <FormBox title="login" >
+            <FormBox title="login">
                 <form className={clsx("login",
-                        theme === "light" && "login_theme"
-                    )} onSubmit={handleSubmit}>
+                    theme === "light" && "login_theme"
+                )} onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="email">Email address</label>
                         <input

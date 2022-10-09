@@ -1,26 +1,33 @@
 import React, {SyntheticEvent, useEffect, useRef, useState} from 'react';
+import clsx from "clsx";
+
+import s from "./StatusModal.module.scss"
+
 import {MdOutlineMonochromePhotos, MdPhoto} from "react-icons/md"
 import {IoMdClose} from "react-icons/io"
-import s from "./StatusModal.module.scss"
-import {imageUpload} from "../../utils/ImageUploaded";
-import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
+
 import {createPosts, setEdit, setModal, updatePosts} from "../../redux/slices/postsSlice";
+import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {setNotify, setNotifyReset} from "../../redux/slices/notifySlices";
-import {IMAGES} from "../../images";
-import clsx from "clsx";
+import {imageUpload} from "../../utils/ImageUploaded";
 import {fetchDataApi} from "../../api/postDataApi";
+import {IMAGES} from "../../images";
+
 
 const StatusModal = () => {
     const dispatch = useAppDispatch()
-    const {theme} = useAppSelector((state: RootState) => state.notify)
+
     const {user, token} = useAppSelector((state: RootState) => state.auth)
-    const {edit} = useAppSelector((state: RootState) => state.posts)
     const {socket} = useAppSelector((state: RootState) => state.socket)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {edit} = useAppSelector((state: RootState) => state.posts)
+
     const [content, setContent] = useState<string>("")
     const [images, setImages] = useState<any[]>([])
     const [stream, setStream] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [tracks, setTracks] = useState<any>()
+
     const useVideoRef = useRef<any>()
     const useCanvasRef = useRef<any>()
 
@@ -110,7 +117,6 @@ const StatusModal = () => {
             const data = await dispatch(createPosts({content, images: media, user, token}))
 
             if (data) {
-
                 let id = (data as any).payload.newPost._id
                 const msg = {
                     id,
@@ -120,26 +126,17 @@ const StatusModal = () => {
                     content,
                     image: media[0]
                 }
-                //  const fetchData = await fetchDataApi.postData("notify", token!, {msg})
 
-                try {
-                    // const {data: notifyData} = await axios.post(`/api/notify`, {msg}, {
-                    //     headers: {
-                    //         'Authorization': `${token}`
-                    //     }
-                    // })
-
-
-                    // socket.emit("createNotify", {
-                    //     ...notifyData.notify,
-                    //     user: {
-                    //         id: user._id,
-                    //         username: user.username,
-                    //         avatar: user.avatar
-                    //     }
-                    // })
-                } catch (err) {
-
+                const {success} = await fetchDataApi.postData("notify", token!, {msg})
+                if (success.notify) {
+                    socket.emit("createNotify", {
+                        ...success.notify,
+                        user: {
+                            id: user._id,
+                            username: user.username,
+                            avatar: user.avatar
+                        }
+                    })
                 }
             }
 
@@ -186,10 +183,13 @@ const StatusModal = () => {
                         {images.map((img: any, index: number) => {
                             return (
                                 <div key={index}>
-                                    <img src={img.camera
-                                        ? img.camera
-                                        : typeof img === "object" ? URL.createObjectURL(img) : img
-                                    } alt=""/>
+                                    <img
+                                        src={img.camera
+                                            ? img.camera
+                                            : typeof img === "object" ? URL.createObjectURL(img) : img
+                                        }
+                                        alt=""
+                                    />
                                     <span role="button" onClick={() => deleteImage(index)}>
                                         <IoMdClose/>
                                     </span>

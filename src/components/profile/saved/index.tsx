@@ -1,11 +1,13 @@
 import React, {FC, useEffect} from 'react';
-import axios from "axios";
+import {useParams} from "react-router-dom";
+
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import {getSavedPostApi} from "../../../redux/slices/postSavedSlice";
-import PostContainer from "../postContainer";
 import {IMAGES} from "../../../images";
+
+import PostContainer from "../postContainer";
 import LoadButton from "../../LoadButton";
-import {useParams} from "react-router-dom";
+
 
 interface Props {
     load: any
@@ -28,9 +30,11 @@ const Saved: FC<Props> = ({result, page, handleLoadMore, load}) => {
 
     return (
         <PostContainer status={status === "loading"} posts={posts!}>
-            <div  className="d-flex j-c-center a-i-center">
+            <div className="d-flex j-c-center a-i-center">
                 {load ? (
-                    <img src={IMAGES.spinner} alt="spinner"/>
+                    <div style={{marginTop: "30px"}}>
+                        <img src={IMAGES.spinner} alt="spinner"/>
+                    </div>
                 ) : (
                     <LoadButton
                         result={result}

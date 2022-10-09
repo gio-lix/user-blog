@@ -1,7 +1,9 @@
 import React, {FC} from 'react';
-import s from "./FormBox.module.scss"
-import {RootState, useAppSelector} from "../../redux/store";
 import clsx from "clsx";
+
+import s from "./FormBox.module.scss"
+
+import {RootState, useAppSelector} from "../../redux/store";
 
 
 interface Props {
@@ -9,13 +11,13 @@ interface Props {
     children: React.ReactNode
 }
 
-const FormBox:FC<Props> = ({children,title}) => {
-    const {theme} = useAppSelector((state:RootState) => state.notify)
+const FormBox: FC<Props> = ({children, title}) => {
+    const {theme} = useAppSelector((state: RootState) => state.notify)
 
     return (
         <section className={clsx(s.root,
-                theme === "light" && s.formBox_theme
-            )}>
+            theme === "light" && s.formBox_theme
+        )}>
             <h1>{title}</h1>
             {children}
         </section>

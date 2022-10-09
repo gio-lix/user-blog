@@ -1,10 +1,12 @@
 import React, {FC} from 'react';
+
 import s from "./PostContainer.module.scss"
+
 import {PostsState} from "../../../typing";
 import {NavLink} from "react-router-dom";
+import {IMAGES} from "../../../images";
 import {AiOutlineHeart} from "react-icons/ai";
 import {BiMessageRounded} from "react-icons/bi";
-import {IMAGES} from "../../../images";
 
 interface Props {
     posts: any
@@ -12,7 +14,7 @@ interface Props {
     status: boolean
 }
 
-const PostContainer:FC<Props> = ({posts, children, status}) => {
+const PostContainer: FC<Props> = ({posts, children, status}) => {
     return (
         <>
             {status ? (
@@ -39,22 +41,12 @@ const PostContainer:FC<Props> = ({posts, children, status}) => {
                 </section>
             )}
 
-           <div>
-               {children}
-           </div>
+            <div>
+                {children}
+            </div>
         </>
     );
 };
 
 export default PostContainer;
 
-// <div className={s.loadButton}>
-//     {load ? (
-//         <img src={IMAGES.spinner} alt="spinner"/>
-//     ) : <LoadButton
-//         result={result}
-//         handleLoadMore={handleLoadMore}
-//         page={page}
-//         load={load}
-//     />}
-// </div>

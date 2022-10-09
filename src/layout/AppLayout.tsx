@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react';
 import {Outlet} from "react-router-dom"
 import {useNavigate} from "react-router-dom"
+
 import {RootState, useAppSelector} from "../redux/store";
 
 const AppLayout = () => {
     const navigate = useNavigate()
+
     const firstLogin = localStorage.getItem("firstLogin")
     const {token} = useAppSelector((state: RootState) => state.auth)
 

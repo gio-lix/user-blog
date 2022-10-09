@@ -1,7 +1,11 @@
 import React, {FC, useEffect, useState} from 'react';
+
+import s from "./Comments.module.scss"
+
 import {CommentState, PostsState} from "../../../typing";
 import CommentsDisplay from "./commentsDisplay/CommentsDisplay";
-import s from "./Comments.module.scss"
+
+
 
 interface Props {
     post: PostsState
@@ -11,11 +15,13 @@ interface CommentProps extends CommentState {
     reply: string
 }
 
+
 const Comments: FC<Props> = ({post}) => {
-    const [comments, setComments] = useState<CommentState[]>([])
+
     const [showComments, setShowComments] = useState<CommentState[]>([])
-    const [next, setNext] = useState<number>(2)
     const [replyComment, setReplyComment] = useState<CommentState[]>([])
+    const [comments, setComments] = useState<CommentState[]>([])
+    const [next, setNext] = useState<number>(2)
 
 
     useEffect(() => {

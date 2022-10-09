@@ -1,7 +1,8 @@
 import axios from "axios";
-import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
-import {UserState} from "../../typing";
+
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {setNotify} from "./notifySlices";
+import {UserState} from "../../typing";
 
 interface User extends UserState {
     saved: string[]
@@ -9,7 +10,7 @@ interface User extends UserState {
 
 const initialState = {
     status: "loaded",
-    user: {} as User ,
+    user: {} as User,
     users: [] as any | [],
     profilePosts: {
         posts: [] as any | [],
@@ -106,16 +107,24 @@ const authSlice = createSlice({
             state.profilePosts.result = state.profilePosts.result + action.payload.result
             state.profilePosts.page = state.profilePosts.page + 1
         },
+        setUpdateUser: (state: State, action: any) => {
+            state.user = {...state.user, ...action.payload.user}
+        },
 
         setSavePosts: (state: State, {payload}: any) => {
             if (state.user.saved) {
-                state.user.saved = [...state.user.saved,payload.postId]
+                state.user.saved = [...state.user.saved, payload.postId]
             } else {
                 state.user.saved = [payload.postId]
             }
         },
         setRemovePosts: (state: State, {payload}: any) => {
             state.user.saved = state.user.saved.filter(e => e !== payload.postId)
+        },
+        setProfilePostsPosts: (state: State, {payload}: any) => {
+            state.profilePosts.page = 2
+            state.profilePosts.posts = payload.post
+            state.profilePosts.result = payload.result
         }
 
     },
@@ -178,5 +187,17 @@ const authSlice = createSlice({
 });
 
 
-export const {setFollowers, setFollowing,setProfileUsers, setProfilePosts,setSavePosts, setRemovePosts} = authSlice.actions
+export const {
+    setFollowers,
+    setProfilePostsPosts,
+    setFollowing,
+    setProfileUsers,
+    setUpdateUser,
+    setProfilePosts,
+    setSavePosts,
+    setRemovePosts
+
+} = authSlice.actions
+
+
 export const authReducer = authSlice.reducer

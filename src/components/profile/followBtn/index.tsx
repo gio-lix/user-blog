@@ -1,9 +1,11 @@
 import React, {FC, useEffect, useState} from 'react';
+
 import s from "./FollowBtn.module.scss"
-import {UserState} from "../../../typing";
+
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import {setFollowers, setFollowing} from "../../../redux/slices/authSlices";
-import axios from "axios";
+import {UserState} from "../../../typing";
+import {fetchDataApi} from "../../../api/postDataApi";
 import {IMAGES} from "../../../images";
 
 interface Props {
@@ -13,13 +15,16 @@ interface Props {
 
 const FollowBtn: FC<Props> = ({user}) => {
     const dispatch = useAppDispatch()
+
+    const {socket} = useAppSelector((state: RootState) => state.socket)
+    const {token, user: auth} = useAppSelector((state: RootState) => state.auth)
+
     const [follow, setFollow] = useState<boolean>(false)
     const [loading, setLoading] = useState(false)
-    const {token, user: auth} = useAppSelector((state: RootState) => state.auth)
 
 
     useEffect(() => {
-        if (auth?.following?.includes(user?._id as string) ) {
+        if (auth?.following?.includes(user?._id as string)) {
             setFollow(true)
         }
 
@@ -32,20 +37,29 @@ const FollowBtn: FC<Props> = ({user}) => {
         let newAuth = {...auth, following: [...(auth as any).following, newUser?._id]}
 
         setLoading(true)
-        try {
-            const {data} = await axios.put(`/api/user/${user._id}/follow`, null, {
-                headers: {
-                    'Authorization': `${token}`
+
+        const {success} = await fetchDataApi.updateData(`user/${user._id}/follow`, token!)
+        if (success) {
+            const msg = {
+                id: user._id,
+                text: "has started to follow you. ",
+                recipients: [user._id],
+                url: `/profile/${auth._id}`,
+                user: {
+                    id: auth._id,
+                    username: auth.username,
+                    avatar: auth.avatar
                 }
-            })
-            console.log("data - ", data)
+            }
+
+            const {success} = await fetchDataApi.postData("notify", token!, {msg})
+            if (success.notify) {
+                socket.emit("createNotify", {...msg})
+            }
+
             dispatch(setFollowers(newUser))
             dispatch(setFollowing(newAuth))
             setFollow(true)
-            setLoading(false)
-        } catch (err) {
-            console.log("err - ", err)
-        } finally {
             setLoading(false)
         }
     }
@@ -54,20 +68,25 @@ const FollowBtn: FC<Props> = ({user}) => {
         let newUser = {...user, followers: [...user.followers.filter((e: string) => e !== auth?._id)]}
         setLoading(true)
 
-        try {
-            await axios.put(`/api/user/${user?._id}/unfollow`, null, {
-                headers: {
-                    'Authorization': `${token}`
+        const {success} = await fetchDataApi.updateData(`user/${user?._id}/unfollow`, token!)
+        if (success) {
+            const msg = {
+                id: user._id,
+                text: " ",
+                recipients: [user._id],
+                url: `/profile/${auth._id}`,
+                user: {
+                    id: auth._id,
+                    username: auth.username,
+                    avatar: auth.avatar
                 }
-            })
+            }
+            await fetchDataApi.deleteData(`notify/${msg.id}?url=${msg.url}`, token!)
+            socket.emit("removeNotify", {...msg})
+
             dispatch(setFollowers(newUser))
             setFollow(false)
             setLoading(false)
-        } catch (err) {
-            console.log("err - ", err)
-        } finally {
-            setLoading(false)
-
         }
     }
 

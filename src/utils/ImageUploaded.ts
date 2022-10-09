@@ -34,5 +34,5 @@ export const checkFileErr = (file: any) => {
     if (file.type !== "image/jpeg" && file.type !== "image/png")
         err = "Image format is incorrect."
 
-    return  err
+    return err
 }

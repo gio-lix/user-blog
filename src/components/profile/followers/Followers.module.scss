@@ -10,6 +10,7 @@
   background: transparent;
 
 
+
   &::before {
     content: "";
     position: absolute;
@@ -69,4 +70,8 @@
 .className {
   justify-content: space-between !important;
   width: 100% !important;
+}
+
+.followers_theme {
+  background-color: #313131 !important;
 }

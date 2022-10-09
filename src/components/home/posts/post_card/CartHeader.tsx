@@ -1,17 +1,20 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
-import {PostsState} from "../../../../typing";
-import s from "./PostCard.module.scss"
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import moment from "moment";
-import {HiDotsHorizontal} from "react-icons/hi"
-import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
-import {GoPencil} from "react-icons/go"
-import {AiFillDelete, AiOutlineCopy} from "react-icons/ai"
-import {deletePost, setEdit, setModal} from "../../../../redux/slices/postsSlice";
 import clsx from "clsx";
-import axios from "axios";
+import {GoPencil} from "react-icons/go"
+
+import s from "./PostCard.module.scss"
+
+import {AiFillDelete, AiOutlineCopy} from "react-icons/ai"
+import {HiDotsHorizontal} from "react-icons/hi"
+
+import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
+import {deletePost, setEdit, setModal} from "../../../../redux/slices/postsSlice";
+
+import {PostsState} from "../../../../typing";
 import {BASE_URL} from "../../../../utils/config";
-import {setDeletePostNotify} from "../../../../redux/slices/postNotifySlice";
+import {fetchDataApi} from "../../../../api/postDataApi";
 
 interface Props {
     post: PostsState
@@ -21,12 +24,16 @@ interface Props {
 const CartHeader: FC<Props> = ({post}) => {
     const {pathname,} = useLocation()
     const navigate = useNavigate()
-    const {user,token} = useAppSelector((state: RootState) => state.auth)
-    const {theme} = useAppSelector((state:RootState) => state.notify)
-    const {socket} = useAppSelector((state:RootState) => state.socket)
     const dispatch = useAppDispatch()
-    const [drop, setDrop] = useState<boolean>(false)
+
+    const {user, token} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {socket} = useAppSelector((state: RootState) => state.socket)
+
     const useInfoRef = useRef<HTMLDivElement | null>(null)
+
+    const [drop, setDrop] = useState<boolean>(false)
+
 
     const handleClickRef = (e: any) => {
         if (!e.path.includes(useInfoRef.current)) {
@@ -44,50 +51,34 @@ const CartHeader: FC<Props> = ({post}) => {
     }
 
     const handleDelete = async (id: string) => {
-        let path = pathname  === `/post/${id}`
+        let path = pathname === `/post/${id}`
         dispatch(deletePost(id))
         if (path) {
             navigate("/")
         }
 
-        try {
-            const {data} = await axios.delete(`/api/post/${id}`, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-            if (data) {
-                const msg = {
-                    id: data.post._id,
-                    recipients: data.post.user.followers,
-                    url: `/post/${data.post._id}`,
-                    text: "added a new post.",
-                    content: data.post.content,
-                    image: data.post.images[0]
-                }
-                try {
-                    const {data} = await axios.delete(`/api/notify/${msg.id}?url=${msg.url}`, {
-                        headers: {
-                            'Authorization': `${token}`
-                        }
-                    })
-                    socket.emit("removeNotify", {
-                        ...data.notify,
-                        user: {
-                            id: user._id,
-                            username: user.username,
-                            avatar: user.avatar
-                        }
-                    })
-                    // dispatch(setDeletePostNotify(data.notify))
-                } catch (err) {
-                    console.log(err)
-                }
+
+        const {success} = await fetchDataApi.deleteData(`post/${id}`, token!)
+        if (success) {
+            const msg = {
+                id: success.post._id,
+                recipients: success.post.user.followers,
+                url: `/post/${success.post._id}`,
+                text: "added a new post.",
+                content: success.post.content,
+                image: success.post.images[0]
             }
-
-
-        } catch (err) {
-            console.log(err)
+            const {success: delSuccess} = await fetchDataApi.deleteData(`notify/${msg.id}?url=${msg.url}`, token!)
+            if (delSuccess) {
+                socket.emit("removeNotify", {
+                    ...delSuccess.notify,
+                    user: {
+                        id: user._id,
+                        username: user.username,
+                        avatar: user.avatar
+                    }
+                })
+            }
         }
     }
 
@@ -117,7 +108,8 @@ const CartHeader: FC<Props> = ({post}) => {
                 </div>
             </div>
             <div ref={useInfoRef} className={s.header_drop}>
-                <span className={clsx(theme === "light" ? s.dropDown_black : s.dropDown )} onClick={() => setDrop(!drop)}>
+                <span className={clsx(theme === "light" ? s.dropDown_black : s.dropDown)}
+                      onClick={() => setDrop(!drop)}>
                     <HiDotsHorizontal/>
                 </span>
                 {/*{(drop && user?._id === post?.user._id) && (*/}

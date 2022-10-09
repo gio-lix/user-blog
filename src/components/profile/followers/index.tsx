@@ -1,12 +1,15 @@
 import React, {FC, useEffect, useState} from 'react';
-import UserCard from "../../userCard";
-import FollowBtn from "../followBtn";
+import axios from "axios";
 import s from "./Followers.module.scss"
+
 import {RootState, useAppSelector} from "../../../redux/store";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {UserState} from "../../../typing";
 import {IMAGES} from "../../../images";
+
+import UserCard from "../../userCard";
+import FollowBtn from "../followBtn";
+import clsx from "clsx";
 
 
 interface Props {
@@ -17,7 +20,10 @@ interface Props {
 
 const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
     const navigate = useNavigate()
+
     const {user: auth, token} = useAppSelector((state: RootState) => state.auth)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+
     const [loading, setLoading] = useState<boolean>(false)
     const [currentUser, setCurrentUser] = useState<UserState[]>([])
 
@@ -45,7 +51,7 @@ const Followers: FC<Props> = ({showFollowers, setShowFollowers, profile}) => {
 
     return (
         <div className={s.root}>
-            <div>
+            <div className={clsx(theme === "light" && s.followers_theme)}>
                 <h1>Followers</h1>
                 <button onClick={() => setShowFollowers(false)}>&times;</button>
                 {loading ? <img className={s.spinner} src={IMAGES.spinner} alt="spinner"/> : (

@@ -1,5 +1,7 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
+
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+
 import {NotifyPostsState} from "../../typing";
 
 const initialState = {
@@ -32,7 +34,7 @@ const postNotifySlice = createSlice({
     initialState,
     reducers: {
         setPostNotify: (state: State, {payload}: any) => {
-            state.posts.push(payload)
+            state.posts.unshift(payload)
         },
         setDeletePostNotify: (state: State, {payload}: any) => {
             state.posts = state.posts.filter((post: any) => post._id !== payload._id)
@@ -45,7 +47,6 @@ const postNotifySlice = createSlice({
             })
             .addCase(getNotifiesApi.fulfilled, (state: State, {payload}: any) => {
                 state.status = "loaded"
-
                 state.posts = payload
             })
     }

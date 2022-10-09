@@ -1,53 +1,48 @@
 import React, {useEffect, useState} from 'react';
+import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
+
+import {getPosts, setLoadPosts} from "../redux/slices/postsSlice";
+import {fetchDataApi} from "../api/postDataApi";
+import {IMAGES} from "../images";
+
+import RightSideBar from "../components/rightSide_bar/rightsideBar";
+import LoadButton from "../components/LoadButton";
 import Status from "../components/home/status";
 import Posts from "../components/home/posts";
-import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
-import {IMAGES} from "../images";
-import {getPosts, setLoadPosts} from "../redux/slices/postsSlice";
-import axios from "axios";
-import LoadButton from "../components/LoadButton";
-import RightSideBar from "../components/rightSide_bar/rightsideBar";
+
 
 const Home = () => {
-    const {result, status, pages} = useAppSelector((state:RootState) => state.posts)
-    const {token} = useAppSelector((state:RootState) => state.auth)
     const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        if (token) {
-            dispatch(getPosts({token}))
-        }
-    },[token])
+    const {result, status, pages} = useAppSelector((state: RootState) => state.posts)
+    const {token} = useAppSelector((state: RootState) => state.auth)
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (token) dispatch(getPosts({token}))
+    }, [token])
+
 
     const onHandleClickLoad = async () => {
         setLoading(true)
-        try {
-            const {data} = await axios.get(`/api/posts?page=${pages}`, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-            dispatch(setLoadPosts(data))
-        } catch (err) {
-            console.log(err)
-        } finally {
+        const {success} = await fetchDataApi.getData(`posts?page=${pages}`, token!)
+        if (success) {
+            dispatch(setLoadPosts(success))
             setLoading(false)
         }
     }
 
 
-
     return (
         <main>
-            <Status />
+            <Status/>
             <div className="grid_home">
-                    {(result === 0 && status === "loaded")
-                        ? <h1>No Posts</h1>
-                        : <Posts />
-                    }
-                <RightSideBar />
+                {(result === 0 && status === "loaded")
+                    ? <h1>No Posts</h1>
+                    : <Posts/>
+                }
+                <RightSideBar/>
             </div>
             <div className="spinner_center">
                 {loading ? (

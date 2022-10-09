@@ -1,43 +1,56 @@
 import React, { useEffect, useRef, useState} from 'react';
-import s from "./Search.module.scss"
-import {BiSearch} from "react-icons/bi"
-import {RootState,useAppSelector} from "../../../redux/store";
-import axios from "axios";
-import {UserState} from "../../../typing";
 import {NavLink} from "react-router-dom";
-import UserCard from "../../userCard";
-import {IMAGES} from "../../../images";
+import axios from "axios";
 import clsx from "clsx";
+
+import s from "./Search.module.scss"
+
+import {BiSearch} from "react-icons/bi"
+
+import {RootState,useAppSelector} from "../../../redux/store";
+import {UserState} from "../../../typing";
+import {IMAGES} from "../../../images";
+import UserCard from "../../userCard";
+import {fetchDataApi} from "../../../api/postDataApi";
+
 
 const Search = () => {
     const {token} = useAppSelector((state: RootState) => state.auth)
     const {theme} = useAppSelector((state: RootState) => state.notify)
+
     const usersRef = useRef<HTMLDivElement | null>(null)
+
     const [search, setSearch] = useState<string>()
-    const [focus, setFocus] = useState(false)
+    const [focus, setFocus] = useState<boolean>(false)
     const [users, setUsers] = useState<UserState[]>([])
     const [load, setLoad] = useState<boolean>(false)
 
 
     useEffect(() => {
-        (async () => {
-            setLoad(true)
-            try {
-                if (search) {
-                    const {data} = await axios.get(`/api/search?username=${search}`, {
-                        headers: {
-                            'Authorization': `${token}`
-                        }
-                    })
-                    setUsers(data.users)
-                    setLoad(false)
-                }
-            } catch (err) {
-                console.log("err - ", err)
-            } finally {
-                setLoad(false)
-            }
-        })()
+        let mounded = true
+
+         if (mounded) {
+             (async () => {
+                 setLoad(true)
+                 try {
+                     if (search) {
+                         const {data} = await axios.get(`/api/search?username=${search}`, {
+                             headers: {
+                                 'Authorization': `${token}`
+                             }
+                         })
+                         setUsers(data.users)
+                         setLoad(false)
+                     }
+                 } catch (err) {
+                     console.log("err - ", err)
+                 } finally {
+                     setLoad(false)
+                 }
+             })()
+
+         }
+         return () => {mounded = false}
     }, [search, token])
 
     const handleClose = () => {

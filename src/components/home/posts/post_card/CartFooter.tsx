@@ -1,74 +1,90 @@
 import React, {FC, useEffect, useState} from 'react';
-import {PostsState} from "../../../../typing";
+
 import s from "./PostCard.module.scss"
+
 import {TbMessageCircle2} from "react-icons/tb"
 import {BiPaperPlane} from "react-icons/bi"
-import { BsFillBookmarkFill} from "react-icons/bs"
-import {RiBookmarkLine, } from "react-icons/ri"
-import {setLikes, setUnLikes} from "../../../../redux/slices/postsSlice";
+import {BsFillBookmarkFill} from "react-icons/bs"
+import {RiBookmarkLine,} from "react-icons/ri"
+
 import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
+import {setLikes, setUnLikes} from "../../../../redux/slices/postsSlice";
+import {setRemovePosts, setSavePosts} from "../../../../redux/slices/authSlices";
 import LikeButton from "../../../LikeButton";
-import axios from "axios";
 import {setNotify} from "../../../../redux/slices/notifySlices";
 import ShareModal from "../../../ShareModal";
+import {PostsState} from "../../../../typing";
 import {BASE_URL} from "../../../../utils/config";
-import {setRemovePosts, setSavePosts} from "../../../../redux/slices/authSlices";
+import {fetchDataApi} from "../../../../api/postDataApi";
 
 
 interface Props {
     post: PostsState
 }
 
+
 const CartFooter: FC<Props> = ({post}) => {
     const dispatch = useAppDispatch()
+
     const {token, user} = useAppSelector((state: RootState) => state.auth)
     const {socket} = useAppSelector((state: RootState) => state.socket)
-    const [isShare, setIsShare] = useState(false)
-    const [saved, setSaved] = useState(false)
+
+    const [isShare, setIsShare] = useState<boolean>(false)
+    const [saved, setSaved] = useState<boolean>(false)
 
 
     const handleLike = async () => {
         dispatch(setLikes({postId: post?._id, userId: user?._id}))
-        socket.emit("likePost", {post,userId: user?._id})
-        try {
-            await axios.put(`/api/posts/${post?._id}/like`, null, {
-                headers: {
-                    'Authorization': `${token}`
+        socket.emit("likePost", {post, userId: user?._id})
+
+
+        const msg = {
+            id: user._id,
+            recipients: [post.user._id],
+            url: `/post/${post?._id}`,
+            text: "like your post.",
+            content: post.content,
+            image: post.images[0]
+        }
+
+        await fetchDataApi.updateData(`posts/${post?._id}/like`, token!)
+
+        const {success} = await fetchDataApi.postData("notify", token!, {msg})
+
+        if (success.notify) {
+            socket.emit("createNotify", {
+                ...msg,
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    avatar: user.avatar
                 }
             })
-
-
-            const msg = {
-                id: user._id,
-                recipients: [post.user._id],
-                url: `/post/${post?._id}`,
-                text: "like your post.",
-                content: post.content,
-                image: post.images[0]
-            }
-            //   ----------- add like to notification
-            // socket.emit("createNotify", {
-            //     ...msg,
-            //     user: {
-            //         id: user._id,
-            //         username: user.username,
-            //         avatar: user.avatar
-            //     }
-            // })
-        } catch (err) {
-            dispatch(setNotify({error: [(err as any).response.data]}))
-            return
         }
+
+
     }
     const handleUnlike = async () => {
         dispatch(setUnLikes({postId: post?._id, userId: user?._id}))
-        socket.emit("unLikePost", {post,userId: user?._id})
+        socket.emit("unLikePost", {post, userId: user?._id})
+
+        const msg = {
+            id: user._id,
+            recipients: [post.user._id],
+            url: `/post/${post?._id}`,
+            text: "unlike your post.",
+            user: {
+                id: user._id,
+                username: user.username,
+                avatar: user.avatar
+            }
+        }
+
+
         try {
-            await axios.put(`/api/posts/${post?._id}/unlike`, null, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
+            await fetchDataApi.updateData(`posts/${post?._id}/unlike`, token!)
+            await fetchDataApi.deleteData(`notify/${msg.id}?url=${msg.url}`, token!)
+            socket.emit("removeNotify", {...msg})
         } catch (err) {
             dispatch(setNotify({error: [(err as any).response.data]}))
             return
@@ -79,34 +95,17 @@ const CartFooter: FC<Props> = ({post}) => {
         if (user?.saved?.find(el => el === post?._id)) {
             setSaved(true)
         }
-    },[user.saved, post])
+    }, [user.saved, post])
 
 
     const onHandleSave = async (id: string) => {
         dispatch(setSavePosts({postId: post._id}))
-        try {
-            await axios.put(`/api/savePost/${id}`,  null,{
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-        } catch (err) {
-            console.log(err)
-        }
+        await fetchDataApi.updateData(`savePost/${id}`, token!)
     }
-    //unSavePost
 
     const onHandleUnSave = async (id: string) => {
         dispatch(setRemovePosts({postId: post._id}))
-        try {
-            await axios.put(`/api/unSavePost/${id}`,  null,{
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-        } catch (err) {
-            console.log(err)
-        }
+        await fetchDataApi.updateData(`unSavePost/${id}`, token!)
     }
 
 
@@ -135,13 +134,13 @@ const CartFooter: FC<Props> = ({post}) => {
                             <BsFillBookmarkFill/>
                         </span>
                     ) : (
-                        <span  onClick={() => onHandleSave(post._id)}>
+                        <span onClick={() => onHandleSave(post._id)}>
                             <RiBookmarkLine/>
                         </span>
-                    ) }
+                    )}
                 </div>
             </div>
-            <div >
+            <div>
                 {isShare && (
                     <ShareModal url={`${BASE_URL}/post/${post._id}`}/>
                 )}

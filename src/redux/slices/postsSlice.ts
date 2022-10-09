@@ -1,5 +1,7 @@
-import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 import axios from "axios";
+
+import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
+
 import {setNotify} from "./notifySlices";
 import {PostsState} from "../../typing";
 
@@ -57,7 +59,6 @@ export const updatePosts = createAsyncThunk<Object, any>(
             dispatch(setNotify({success: [{msg: data.msg}]}))
             return data
         } catch (err) {
-            dispatch(setNotify({error: [(err as any).response.data]}))
             return
         }
     }
@@ -80,7 +81,7 @@ export const getPosts = createAsyncThunk<Object, any>(
 )
 export const likePost = createAsyncThunk<Object, any>(
     "posts/likePost",
-    async (params, {dispatch, getState}) => {
+    async (params, {dispatch}) => {
         const {token, postId, userId} = params
         try {
             const {data} = await axios.put(`/api/posts/${postId}/like`, null, {
@@ -90,7 +91,6 @@ export const likePost = createAsyncThunk<Object, any>(
             })
             return {data, postId, userId}
         } catch (err) {
-            dispatch(setNotify({error: [(err as any).response.data]}))
             return
         }
     }
@@ -106,7 +106,7 @@ export const getPostApi = createAsyncThunk<Object, any>(
             })
             return data
         } catch (err) {
-            return dispatch(setNotify({error: [(err as any).response.data]}))
+            return
         }
     }
 )
@@ -119,10 +119,9 @@ export const getDiscoveryPostApi = createAsyncThunk<Object, any>(
                     'Authorization': `${params.token}`
                 }
             })
-            console.log("getDiscoveryPostApi - ", data)
             return data
         } catch (err) {
-            return dispatch(setNotify({error: [(err as any).response.data]}))
+            return
         }
     }
 )

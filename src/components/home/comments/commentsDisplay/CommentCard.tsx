@@ -1,19 +1,20 @@
 import React, {FC, useEffect, useState} from 'react';
-import {CommentState, PostsState, UserState} from "../../../../typing";
 import s from "./CommentDisplay.module.scss"
-import {NavLink} from "react-router-dom";
 import moment from "moment";
 import clsx from "clsx";
+import {NavLink} from "react-router-dom";
+
+import {CommentState, PostsState, UserState} from "../../../../typing";
+import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
 import {
     setCommentLike,
     setCommentUnLike,
     setUpdateComment
 } from "../../../../redux/slices/postsSlice";
-import {RootState, useAppDispatch, useAppSelector} from "../../../../redux/store";
+import {fetchDataApi} from "../../../../api/postDataApi";
+
 import LikeButton from "../../../LikeButton";
 import CommentsMenu from "../CommentsMenu";
-import axios from "axios";
-import {setNotify} from "../../../../redux/slices/notifySlices";
 import InputComments from "../inputComments";
 
 interface Props {
@@ -23,16 +24,18 @@ interface Props {
     commentId: string
 }
 
-const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
+
+const CommentCard: FC<Props> = ({children, comment, commentId, post}) => {
     const dispatch = useAppDispatch()
+
     const {token, user} = useAppSelector((state: RootState) => state.auth)
     const {theme} = useAppSelector((state: RootState) => state.notify)
-    const [content, setContent] = useState<string>("")
-    const [readMore, setReadMore] = useState<boolean>(false)
-    const [onEdit, setOnEdit] = useState<boolean>(false)
-    const [loadLike, setLoadLike] = useState<boolean>(false)
-    const [onReply, setOnReply] = useState<boolean | object>(false)
 
+    const [loadLike, setLoadLike] = useState<boolean>(false)
+    const [readMore, setReadMore] = useState<boolean>(false)
+    const [onReply, setOnReply] = useState<boolean | object>(false)
+    const [content, setContent] = useState<string>("")
+    const [onEdit, setOnEdit] = useState<boolean>(false)
 
 
     useEffect(() => {
@@ -40,53 +43,25 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
     }, [comment])
 
     const onHandleLike = async () => {
-
         if (loadLike) return
-
         dispatch(setCommentLike({postId: post._id, commentId: comment._id, user}))
-
-        try {
-            await axios.put(`/api/comment/${comment._id}/like`, null, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-        } catch (err) {
-            console.log("err - ", err)
-        } finally {
-            setLoadLike(false)
-        }
+        await fetchDataApi.updateData(`comment/${comment._id}/like`, token!)
+        setLoadLike(false)
     }
+
+
     const onHandleUnlike = async () => {
-
         if (loadLike) return
-
         dispatch(setCommentUnLike({postId: post._id, commentId: comment._id, user}))
-
-        try {
-            await axios.put(`/api/comment/${comment._id}/unlike`, null, {
-                headers: {
-                    'Authorization': `${token}`
-                }
-            })
-        } catch (err) {
-            console.log("err - ", err)
-        } finally {
-            setLoadLike(false)
-        }
+        await fetchDataApi.updateData(`comment/${comment._id}/unlike`, token!)
+        setLoadLike(false)
     }
+
+
     const onHandleUpdate = async () => {
         if (comment.content !== content) {
             dispatch(setUpdateComment({postId: post._id, comment}))
-            try {
-                await axios.put(`/api/comment/${comment._id}`, {content}, {
-                    headers: {
-                        'Authorization': `${token}`
-                    }
-                })
-            } catch (err) {
-                dispatch(setNotify({error: [(err as any).response.data]}))
-            }
+            await fetchDataApi.updateData(`comment/${comment._id}`, token!)
         } else {
             setOnEdit(false)
         }
@@ -94,11 +69,9 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
     }
 
     const onHandleReply = () => {
-            if (onReply) return setOnReply(false)
-            setOnReply({...comment, commentId})
+        if (onReply) return setOnReply(false)
+        setOnReply({...comment, commentId})
     }
-
-
 
 
     return (
@@ -110,8 +83,8 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
                 </NavLink>
             </div>
             <div className={clsx(s.comment_content_box,
-                    theme === "light" && s.comment_content_box_theme
-                )}>
+                theme === "light" && s.comment_content_box_theme
+            )}>
                 <div>
                     {
                         onEdit ? (
@@ -196,7 +169,7 @@ const CommentCard: FC<Props> = ({children, comment,commentId, post}) => {
             <div className={s.comment_content_like_box}>
                 {onReply &&
                     <InputComments
-                        post={ post}
+                        post={post}
                         onReply={onReply}
                         setOnReply={setOnReply}
                     >

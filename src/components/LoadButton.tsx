@@ -7,7 +7,7 @@ interface Props {
     load: boolean
 }
 
-const LoadButton:FC<Props> = ({handleLoadMore,page,result, load}) => {
+const LoadButton: FC<Props> = ({handleLoadMore, page, result, load}) => {
 
     return (
         <>
@@ -17,7 +17,7 @@ const LoadButton:FC<Props> = ({handleLoadMore,page,result, load}) => {
                         <button onClick={handleLoadMore} className="loadButton">
                             Load more
                         </button>
-                     )
+                    )
             }
 
         </>

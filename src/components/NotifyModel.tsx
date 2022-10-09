@@ -1,22 +1,26 @@
-import React, {useEffect} from 'react';
-import {RootState, useAppSelector} from "../redux/store";
+import React from 'react';
+import moment from "moment";
+import clsx from "clsx";
+
+import {NavLink} from "react-router-dom";
 
 import {IoMdNotificationsOff, IoIosNotifications} from "react-icons/io"
 import {MdNotificationAdd} from "react-icons/md"
 import {GoPrimitiveDot} from "react-icons/go"
 
+import {RootState, useAppSelector} from "../redux/store";
 import {NotifyPostsState} from "../typing";
-import {NavLink} from "react-router-dom";
-import moment from "moment";
+
 
 const NotifyModel = () => {
 
     const {posts, sound} = useAppSelector((state: RootState) => state.postNotify)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
 
 
     return (
         <>
-            <div className="notify">
+            <div className={clsx("notify", theme === "light" && "notify_theme")}>
                 <h3>Notification</h3>
                 {sound ? (
                     <span>
@@ -28,25 +32,31 @@ const NotifyModel = () => {
                     </span>
                 )}
             </div>
-            <section className='notify_body'>
+            <section className="notify_body">
                 {posts.length === 0 ? (
                     <span>
                         <MdNotificationAdd/>
                     </span>
                 ) : (
                     <div>
-                        <div className="notify_body_items">
+                        <div className={clsx("notify_body_items")}>
                             {posts?.map((item: NotifyPostsState, index: number) => {
                                 return (
-                                    <NavLink className="notify_navLink" to={`${item?.url}`} key={`${item?._id}_${index}`}>
+                                    <NavLink className={clsx(
+                                        "notify_navLink",
+                                        theme === "light" && "notify_navLink_theme"
+                                    )} to={`${item?.url}`}
+                                             key={`${item?._id}_${index}`}>
                                         <div className="notify_navLink_head">
                                             <article>
                                                 <img src={item?.user.avatar} alt="avatar"/>
                                                 <strong>{item?.user.username}</strong>
                                             </article>
                                             <article>
-                                                <span>{item?.text}</span>
-                                                <img src={item?.image} alt="image"/>
+                                                <span >{item?.text}</span>
+                                                {item?.image && (
+                                                    <img src={item?.image} alt="image"/>
+                                                )}
                                             </article>
                                         </div>
                                         <div className="notify_navLink_footer">
@@ -60,7 +70,10 @@ const NotifyModel = () => {
                                 )
                             })}
                         </div>
-                        <div className="notify_body_footer">
+                        <div className={clsx(
+                            "notify_body_footer",
+                            theme === "light" && "notify_body_footer_button_theme"
+                        )}>
                             <p>delete all</p>
                         </div>
                     </div>

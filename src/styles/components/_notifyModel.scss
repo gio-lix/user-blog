@@ -98,11 +98,17 @@
     align-items: center;
     margin-bottom: 5px;
 
+    article {
+      span {
+        margin-right: 20px;
+      }
+    }
     strong {
       margin-left: 20px;
       font-size: $font-md-18;
       font-weight: 600;
       color: $black;
+
     }
 
     > div {
@@ -143,5 +149,46 @@
     object-fit: cover;
   }
 
+}
 
+.notify_theme {
+
+  h3 {
+    color: white !important;
+  }
+}
+
+
+
+.notify_navLink_theme {
+  color: white;
+  strong {
+    color: white;
+  }
+  article {
+    span {
+      color: #ddddfa !important;
+    }
+  }
+
+  &:hover {
+    background-color: #4f4f83 !important;
+  }
+
+  div:last-child {
+    small {
+      color: #ddecc7;
+    }
+    > small:last-child {
+      color: #b1d1da !important;
+    }
+  }
+}
+
+.notify_body_footer_button_theme {
+  p {
+    &:hover {
+      background-color: #4f4f83 !important;
+    }
+  }
 }

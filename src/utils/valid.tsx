@@ -1,7 +1,7 @@
 import {ValidState} from "../typing";
 
 
-export const validation = ({password, confirmPassword, email, fullname, username}:ValidState) => {
+export const validation = ({password, confirmPassword, email, fullname, username}: ValidState) => {
     const err: any = {}
 
     if (!fullname) {
@@ -38,7 +38,7 @@ export const validation = ({password, confirmPassword, email, fullname, username
     }
 }
 
-function validateEmail(email:string) {
+function validateEmail(email: string) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }

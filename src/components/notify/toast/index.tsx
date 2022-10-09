@@ -1,4 +1,5 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
+
 import s from "./Toast.module.scss"
 
 
@@ -27,10 +28,10 @@ const Toast: FC<Props> = ({handleShow, message, bgColor}) => {
                 </div>
             )}
 
-            {!!fun()  &&  Object.values(fun())?.map((item: any, index: number) => {
+            {!!fun() && Object.values(fun())?.map((item: any, index: number) => {
                 return (
-                    <div  key={index} style={{backgroundColor: bgColor}}>
-                        <p >{item}</p>
+                    <div key={index} style={{backgroundColor: bgColor}}>
+                        <p>{item}</p>
                     </div>
                 )
             })}

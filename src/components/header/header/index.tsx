@@ -1,9 +1,11 @@
 import React from 'react';
-import s from "./Header.module.scss"
-import Menu from "../menu";
-import Search from "../search";
-import {RootState, useAppSelector} from "../../../redux/store";
 import clsx from "clsx";
+
+import s from "./Header.module.scss"
+
+import {RootState, useAppSelector} from "../../../redux/store";
+import Search from "../search";
+import Menu from "../menu";
 
 const Header = () => {
     const {theme} = useAppSelector((state: RootState) => state.notify)

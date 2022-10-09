@@ -1,22 +1,25 @@
 import React, {SyntheticEvent, useState} from 'react';
-import FormBox from "../../components/FormBox";
 import clsx from "clsx";
 import {Link, useNavigate} from "react-router-dom";
-import {IMAGES} from "../../images";
-import {validation} from "../../utils/valid";
+
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {postRegisterDataApi} from "../../redux/slices/authSlices";
 import {setNotify} from "../../redux/slices/notifySlices";
+import {validation} from "../../utils/valid";
+import {IMAGES} from "../../images";
 
+import FormBox from "../../components/FormBox";
 
 
 const Register = () => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
-    const {theme} = useAppSelector((state:RootState) => state.notify)
-    const [typePass, setTypePass] = useState(false)
-    const [typeConPass, setTypeConPass] = useState(false)
-    const [isFocused, setIsFocused] = useState({focus: ""})
+
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+
+    const [typeConPass, setTypeConPass] = useState<boolean>(false)
+    const [isFocused, setIsFocused] = useState<{ focus: string }>({focus: ""})
+    const [typePass, setTypePass] = useState<boolean>(false)
     const [userData, setUserDate] = useState({
         fullname: "",
         username: "",
@@ -25,7 +28,7 @@ const Register = () => {
         confirmPassword: "",
         gender: "male"
     })
-    const { password, confirmPassword, email, fullname, username} = userData
+    const {password, confirmPassword, email, fullname, username} = userData
 
 
     const handleChange = (e: any) => {
@@ -50,8 +53,8 @@ const Register = () => {
             <FormBox title="Register">
                 <form
                     className={clsx("register",
-                            theme === "light" && "register_theme"
-                        )}
+                        theme === "light" && "register_theme"
+                    )}
                     onSubmit={handleSubmit}
                 >
                     <div>
@@ -168,13 +171,15 @@ const Register = () => {
                         </div>
                         <div className="register_radio">
                             <label htmlFor="male">
-                                <input onChange={handleChange} value="male" type="radio" name="gender" id="male"/>:  Male
+                                <input onChange={handleChange} value="male" type="radio" name="gender" id="male"/>: Male
                             </label>
                             <label htmlFor="female">
-                                <input onChange={handleChange} value="female" type="radio" name="gender" id="female"/>: Female
+                                <input onChange={handleChange} value="female" type="radio" name="gender" id="female"/>:
+                                Female
                             </label>
                             <label htmlFor="other">
-                                <input onChange={handleChange} value="other" type="radio" name="gender" id="other"/>: Other
+                                <input onChange={handleChange} value="other" type="radio" name="gender" id="other"/>:
+                                Other
                             </label>
                         </div>
                     </div>

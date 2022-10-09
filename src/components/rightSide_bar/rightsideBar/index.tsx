@@ -1,20 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import s from "./RightSideBar.module.scss"
-import {RootState, useAppSelector} from "../../../redux/store";
-import UserCard from "../../userCard";
-import {AiOutlineReload} from "react-icons/ai"
-import axios from "axios";
-import {UserState} from "../../../typing";
-import clsx from "clsx";
 import {useNavigate} from "react-router-dom";
+import {AiOutlineReload} from "react-icons/ai"
+
+import axios from "axios";
+import clsx from "clsx";
+
+import s from "./RightSideBar.module.scss"
+
+import {RootState, useAppSelector} from "../../../redux/store";
+import {UserState} from "../../../typing";
+
 import FollowBtn from "../../profile/followBtn";
+import UserCard from "../../userCard";
+
 
 const RightSideBar = () => {
     const navigate = useNavigate()
+
     const {user, token} = useAppSelector((state: RootState) => state.auth)
+
     const [users, setUsers] = useState<UserState[]>([])
-    const [loading, setLoading] = useState(false)
-    const [reload, setReload] = useState(false)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [reload, setReload] = useState<boolean>(false)
 
     useEffect(() => {
         let mounded = true

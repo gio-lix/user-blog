@@ -70,7 +70,14 @@
 }
 
 
+.drop_theme_notify {
+  box-shadow: none !important;
+  background-color: black !important;
+}
+
+
 .menu_dark {
+
   > ul {
     .icons {
       color: $gray-light-200 !important;
@@ -166,4 +173,8 @@
       background-color: #646279 !important;
     }
   }
+}
+
+.theme_light_num {
+  color: whitesmoke!important;
 }

@@ -1,8 +1,10 @@
-import React, {useEffect,  useState} from 'react';
-import {RootState,  useAppSelector} from "../../../redux/store";
+import React, {useEffect, useState} from 'react';
+
+import {RootState, useAppSelector} from "../../../redux/store";
 import {PostsState} from "../../../typing";
-import PostCart from "../../PostCart";
 import {IMAGES} from "../../../images";
+
+import PostCart from "../../PostCart";
 
 
 const Posts = () => {

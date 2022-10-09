@@ -1,16 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router-dom"
-import axios from "axios";
 import clsx from "clsx";
 import s from "./Info.module.scss"
 
 import {postProfileDataApi, postProfilePosts, setProfileUsers} from "../../../redux/slices/authSlices";
 import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
+
+import {fetchDataApi} from "../../../api/postDataApi";
+import {IMAGES} from "../../../images";
+
 import EditProfile from "../editProfile";
 import FollowBtn from "../followBtn";
 import Followers from "../followers";
 import Following from "../following";
-import {IMAGES} from "../../../images";
 
 
 const Info = () => {
@@ -27,27 +29,21 @@ const Info = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            try {
-                const {data} = await axios.get(`/api/user/${id}`, {
-                    headers: {
-                        'Authorization': `${token}`
-                    }
-                })
-                dispatch(setProfileUsers(data.user))
+            const {success} = await fetchDataApi.getData(`user/${id}`, token!)
+            if (success) {
+                dispatch(setProfileUsers(success?.user))
                 dispatch(postProfilePosts({id, token}))
-            } catch (err) {
-                console.log(err)
             }
         }
         if (ids.every((item: any) => item !== id)) {
             getUser()
         }
-    }, [id, user, ids,dispatch, token])
+    }, [id, user, ids,count, token])
 
 
     useEffect(() => {
         dispatch(postProfileDataApi({id, token}))
-    }, [id, token, dispatch])
+    }, [id, token, dispatch ])
 
     const handleClick = (e: any) => {
         if (!e.path.includes(editRef.current)) {
@@ -62,19 +58,10 @@ const Info = () => {
 
     useEffect(() => {
         (async () => {
-            try {
-                const {data} = await axios.get(`/api/user/${id}`, {
-                    headers: {
-                        'Authorization': `${token}`
-                    }
-                })
-                setCurrentUser(data.user)
-            } catch (err) {
-                console.log(err)
-            }
+            const {success} = await fetchDataApi.getData(`user/${id}`, token!)
+            if (success) setCurrentUser(success.user)
         })()
     }, [id, count, token])
-
 
     return (
         <>
@@ -86,7 +73,7 @@ const Info = () => {
                 </>
             ) : (
                 <>
-                    <main className={clsx(s.user, onEdit && s.hover)}>
+                    <main  className={clsx(s.user, onEdit && s.hover)}>
                         <section className={s.grid}>
                             <img src={currentUser?.avatar} alt="user"/>
                             <div>

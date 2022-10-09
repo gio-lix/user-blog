@@ -5,6 +5,7 @@ import {RootState, useAppDispatch, useAppSelector} from "../../../redux/store";
 import {setComments} from "../../../redux/slices/postsSlice";
 import axios from "axios";
 import clsx from "clsx";
+import {fetchDataApi} from "../../../api/postDataApi";
 
 interface Props {
     post: PostsState
@@ -38,6 +39,7 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
         }
 
 
+
         try {
             const {data} = await axios.post(`/api/comment`, {
                 ...newComment,
@@ -49,7 +51,28 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
                 }
             })
             dispatch(setComments({postId: post?._id, newComment: data.newComment}))
-            socket.emit("createComment", {postId: post?._id, newComment: data.newComment})
+            socket.emit("createComment", {
+                postId: post?._id,
+                newComment: data.newComment
+            })
+
+            const msg = {
+                id: data.newComment._id,
+                recipients: data.newComment.reply ? [data.newComment.tag._id] : [post.user._id],
+                url: `/post/${post._id}`,
+                text: data.newComment.reply ? "mentioned you in a comment" : "has commented on your post",
+                content: data.newComment.content,
+                image: post.images[0],
+                user: {
+                    id: post.user._id,
+                    username: post.user.username,
+                    avatar: post.user.avatar
+                }
+            }
+            const {success} = await fetchDataApi.postData("notify", token!, {msg})
+            if (success.notify) {
+                socket.emit("createNotify", {...msg})
+            }
         } catch (err) {
             console.log("err - ", err)
         }

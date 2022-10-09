@@ -6,8 +6,8 @@ const Loading = () => {
         <section className={s.root}>
             <p>Loading</p>
             <div className={s.loading}>
-                <div className={s.circle}> </div>
-                <div className={s.circle}> </div>
+                <div className={s.circle}></div>
+                <div className={s.circle}></div>
             </div>
         </section>
     );

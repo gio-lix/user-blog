@@ -89,6 +89,21 @@
   }
 }
 
+.theme_dark {
+  background-color: black!important;
+  button {
+    color: whitesmoke;
+  }
+  input, textarea, select {
+    background-color: #7979b9;
+    color: white!important;
+  }
+  * label {
+    color: whitesmoke;
+  }
+}
+
+
 .save_button {
   border: none;
   width: 100%;
@@ -110,6 +125,14 @@
 .images_group {
   display: grid;
   grid-template-columns: 4fr 3fr;
+
+  .loading_image {
+    width: 100px!important;
+    height: 100px!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   > label {
     width: 200px;

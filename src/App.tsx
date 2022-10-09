@@ -1,24 +1,28 @@
 import React, {useEffect} from 'react';
 import {Routes, Route} from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
-import Home from "./pages/home";
-import AuthLayout from "./layout/AuthLayout";
-import Login from "./pages/account/login";
-import Register from "./pages/account/register";
-import Notify from "./components/notify";
+import clsx from "clsx";
+
 import {RootState, useAppDispatch, useAppSelector} from "./redux/store";
 import {refreshDataApi} from "./redux/slices/authSlices";
-import PageRender from "./customRouter/PageRender";
+
 import PrivateRouter from "./customRouter/PrivateRouter";
+import PageRender from "./customRouter/PageRender";
+import Register from "./pages/account/register";
 import NotFound from "./components/NotFound";
-import PostPage from "./pages/post/[id]";
-import clsx from "clsx";
+import AuthLayout from "./layout/AuthLayout";
 import SocketClient from "./SocketClient";
+import Login from "./pages/account/login";
+import Notify from "./components/notify";
+import PostPage from "./pages/post/[id]";
+import Home from "./pages/home";
+
 
 function App() {
     const dispatch = useAppDispatch()
-    const {theme} = useAppSelector((state:RootState) => state.notify)
-    const {token} = useAppSelector((state:RootState) => state.auth)
+
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+    const {token} = useAppSelector((state: RootState) => state.auth)
     const firstLogin = localStorage.getItem("firstLogin")
 
     useEffect(() => {
@@ -28,11 +32,10 @@ function App() {
     }, [firstLogin, dispatch])
 
 
-
     return (
         <main className={clsx('container', theme === "light" ? "dark_theme" : "light_theme")}>
             <Notify/>
-            {token && <SocketClient />}
+            {token && <SocketClient/>}
             <Routes>
                 <Route path="/" element={<AppLayout/>}>
                     <Route path="login" element={<Login/>}/>
@@ -40,10 +43,10 @@ function App() {
                 </Route>
                 <Route path="/" element={<AuthLayout/>}>
                     <Route index element={<Home/>}/>
-                    <Route path="post/:id" element={<PostPage />} />
-                    <Route element={<PrivateRouter />}>
-                        <Route  path=":page" element={ <> <PageRender  /> </> } />
-                        <Route  path=":page/:id" element={ <> <PageRender  /> </> } />
+                    <Route path="post/:id" element={<PostPage/>}/>
+                    <Route element={<PrivateRouter/>}>
+                        <Route path=":page" element={<> <PageRender/> </>}/>
+                        <Route path=":page/:id" element={<> <PageRender/> </>}/>
                     </Route>
                 </Route>
                 <Route path="*" element={<NotFound/>}/>

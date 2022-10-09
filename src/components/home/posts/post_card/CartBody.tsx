@@ -1,15 +1,20 @@
 import React, {FC, useState} from 'react';
-import {PostsState} from "../../../../typing";
+import clsx from "clsx";
+
 import s from "./PostCard.module.scss"
+
 import {AiOutlineLeft, AiOutlineRight} from "react-icons/ai"
 import {BsDashLg} from "react-icons/bs"
-import clsx from "clsx";
+
+import {PostsState} from "../../../../typing";
 
 interface Props {
     post: PostsState
 }
 
+
 const CartBody: FC<Props> = ({post}) => {
+
     const [imageIndex, setImageIndex] = useState<number>(0)
     const [readMore, setReadMore] = useState<boolean>(false)
 

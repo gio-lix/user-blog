@@ -1,11 +1,15 @@
 import React, {FC, useEffect, useState} from 'react';
-import {UserState} from "../../../typing";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
+
 import s from "./Following.module.scss"
+
+import {RootState, useAppSelector} from "../../../redux/store";
+import {UserState} from "../../../typing";
 import UserCard from "../../userCard";
 import FollowBtn from "../followBtn";
-import {useNavigate} from "react-router-dom";
-import {RootState, useAppSelector} from "../../../redux/store";
-import axios from "axios";
+import clsx from "clsx";
+
 
 interface Props {
     profile: UserState
@@ -13,12 +17,13 @@ interface Props {
     setShowFollowing: Function
 }
 
-const Following:FC<Props> = ({setShowFollowing, profile,showFollowing}) => {
+const Following: FC<Props> = ({setShowFollowing, profile, showFollowing}) => {
     const navigate = useNavigate()
     const {user: auth, token} = useAppSelector((state: RootState) => state.auth)
-
+    const {theme} = useAppSelector((state: RootState) => state.notify)
 
     const [currentUser, setCurrentUser] = useState<UserState[]>([])
+
     useEffect(() => {
         setCurrentUser([])
         profile?.following.forEach((e: string) => {
@@ -37,15 +42,15 @@ const Following:FC<Props> = ({setShowFollowing, profile,showFollowing}) => {
         return
     }
     return (
-        <div className={s.root}>
-            <div>
+        <div className={s.root}  >
+            <div  className={clsx(theme === "light" && s.following_theme)}>
                 <h1>Followers</h1>
                 <button onClick={() => setShowFollowing(false)}>&times;</button>
                 {currentUser.map((user: UserState) => {
                     return (
-                        <div key={user._id}>
+                        <div  key={user._id}>
                             <UserCard {...user} className={s.className} handleLink={() => handleLink(user._id)}>
-                                {auth?._id !== user._id && <FollowBtn  user={user} />}
+                                {auth?._id !== user._id && <FollowBtn user={user}/>}
                             </UserCard>
                         </div>
                     )

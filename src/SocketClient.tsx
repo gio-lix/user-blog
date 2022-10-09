@@ -1,10 +1,14 @@
 import React, {useEffect} from 'react';
+
+
 import {RootState, useAppDispatch, useAppSelector} from "./redux/store";
 import {setCommentRemove, setComments, setLikes, setUnLikes} from "./redux/slices/postsSlice";
 import {setDeletePostNotify, setPostNotify} from "./redux/slices/postNotifySlice";
 
+
 const SocketServer = () => {
     const dispatch = useAppDispatch()
+
     const {socket} = useAppSelector((state: RootState) => state.socket)
     const {user} = useAppSelector((state: RootState) => state.auth)
 
@@ -30,7 +34,6 @@ const SocketServer = () => {
 
     useEffect(() => {
         socket.on("createCommentToClient", (newComment: any) => {
-            console.log("newComment - ", newComment)
             dispatch(setComments({postId: newComment.postId, newComment: newComment.newComment}))
         })
         return () => socket.off("createCommentToClient")
