@@ -109,8 +109,9 @@ const Menu = () => {
                             theme === "light" && s.drop_theme
                         )}>
                             <Link to={`/profile/${user?._id}`}>Profile</Link>
-                            <button
-                                onClick={() => onHandleTheme()}>{theme === "light" ? "Light mode" : "Dark mode"}</button>
+                            <button onClick={() => onHandleTheme()}>
+                                {theme === "light" ? "Light mode" : "Dark mode"}
+                            </button>
                             <Link onClick={handleLogout} to="/">logout</Link>
                         </div>
                     </li>

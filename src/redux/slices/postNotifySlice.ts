@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, current} from "@reduxjs/toolkit";
 
 import {NotifyPostsState} from "../../typing";
 
@@ -38,6 +38,16 @@ const postNotifySlice = createSlice({
         },
         setDeletePostNotify: (state: State, {payload}: any) => {
             state.posts = state.posts.filter((post: any) => post._id !== payload._id)
+        },
+        setDeleteAll: (state: State) => {
+            state.posts = []
+        },
+        setUpdatePostNotify: (state: State, {payload}: any) => {
+            let findIndex = state.posts.findIndex(item => item._id === payload._id)
+            state.posts[findIndex].isRead = true
+        },
+        setSound: (state: State,{payload}: any) => {
+            state.sound = payload
         }
     },
     extraReducers: (builder) => {
@@ -53,6 +63,12 @@ const postNotifySlice = createSlice({
 })
 
 
-export const {setPostNotify, setDeletePostNotify} = postNotifySlice.actions
+export const {
+    setSound,
+    setPostNotify,
+    setDeletePostNotify,
+    setDeleteAll,
+    setUpdatePostNotify
+} = postNotifySlice.actions
 
 export const postNotifySliceReducer = postNotifySlice.reducer

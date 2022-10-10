@@ -53,7 +53,7 @@ const RightSideBar = () => {
 
     return (
         <div className={s.suggest}>
-            <UserCard {...user!} />
+            <UserCard className={s.users_styles} {...user!} />
 
             <div className={s.suggest_title_box}>
                 <h5>Suggestions for you</h5>

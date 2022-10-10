@@ -31,6 +31,18 @@ function App() {
         }
     }, [firstLogin, dispatch])
 
+    useEffect(() => {
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+        else if (Notification.permission === "granted") {}
+        else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {}
+            });
+        }
+    },[])
+
 
     return (
         <main className={clsx('container', theme === "light" ? "dark_theme" : "light_theme")}>

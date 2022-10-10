@@ -1,0 +1,211 @@
+@import "src/styles/variables";
+
+.leftSide {
+  &_icon {
+    display: flex;
+    justify-content: space-between;
+
+    * svg {
+      font-size: $font-md-15;
+      color: $gray-light-500;
+    }
+  }
+
+
+  &_active_icon {
+    cursor: pointer;
+
+    * svg {
+      color: $green-yellow-600;
+    }
+
+    h2 {
+      cursor: none;
+      text-decoration: none !important;
+    }
+  }
+
+  &_form {
+    height: 45px;
+    border-bottom: 1px solid black;
+
+    > input {
+      outline: none;
+      border: none;
+
+      width: 100%;
+      height: 100%;
+      padding: 0 10px;
+      font-size: $font-md-16;
+      background: transparent;
+
+    }
+
+    > button {
+      display: none;
+    }
+  }
+}
+
+
+.rightSide {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 10px;
+
+  &_body_box {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+
+    .chat_display {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+
+
+      .chat_other {
+        justify-content: flex-start;
+        justify-items: flex-start;
+      }
+
+      .chat_row {
+        display: grid;
+        grid-template-columns: 70%;
+        margin-bottom: 10px;
+      }
+
+      .chat_me {
+        justify-content: flex-end;
+        justify-items: flex-end;
+      }
+
+      .chat_me .chat_text {
+        padding: 20px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        border-bottom-left-radius: 15px;
+        border: 1px solid $bg-blue-800;
+        background-color: $bg-blue-500;
+        color: $white;
+
+      }
+
+      .chat_other .chat_text {
+        padding: 20px;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        border: 1px solid #b7b7b7;
+        background-color: $bg-white;
+      }
+
+
+    }
+
+    &_form {
+      > form {
+        width: 100%;
+        height: 40px;
+        display: flex;
+
+        > input {
+          outline: none;
+          border-left: none;
+          border-right: none;
+          border-bottom: none;
+          border-top: 1px solid $bg-gray-light-500;
+          width: 100%;
+          height: 100%;
+          padding: 0 10px;
+        }
+
+        > button {
+          outline: none;
+          border-left: none;
+          border-right: none;
+          border-bottom: none;
+          border-top: 1px solid $bg-gray-light-500;
+          width: 70px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $bg-gray-light-400;
+          }
+        }
+      }
+    }
+  }
+
+  &_deleteIcons {
+    display: flex;
+    justify-content: space-between;
+
+    * h2 {
+      text-decoration: none !important;
+      color: $blue-600 !important;
+    }
+
+    svg {
+      cursor: pointer;
+      font-size: $font-lg-20;
+      color: $red-500;
+    }
+  }
+}
+
+
+.chat {
+  display: flex;
+  flex-direction: column;
+
+  &_title {
+    margin-bottom: 10px;
+
+    > img {
+      width: 30px;
+      height: 30px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  }
+
+  .chat_text {
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  &_time {
+    display: block;
+    font-size: $font-md-13;
+    color: $gray-light-500;
+  }
+}
+
+
+.users_styles {
+  cursor: pointer;
+
+  * h2 {
+    cursor: inherit !important;
+    text-decoration: none !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
