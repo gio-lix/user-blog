@@ -12,6 +12,8 @@ import {setNotify, setNotifyReset} from "../../redux/slices/notifySlices";
 import {imageUpload} from "../../utils/ImageUploaded";
 import {fetchDataApi} from "../../api/postDataApi";
 import {IMAGES} from "../../images";
+import Icons from "../Icons";
+import {imageShow, videoShow} from "../../utils/mediaShow";
 
 
 const StatusModal = () => {
@@ -41,16 +43,21 @@ const StatusModal = () => {
 
         const files = [...e.target.files]
 
+
         files.forEach(file => {
-            // if (file.type !== "image/jpeg" && file.type !== "image/png") {
             if (file.size > 1024 * 1024 * 5) {
-                return err = "The image largest is 5mb"
+                return err = "The image/video largest is 5mb"
             }
             return newImages.push(file)
         })
 
+        if (err.length > 0) {
+            dispatch(setNotify({error: [{msg: err}]}))
+        }
         setImages([...images, ...newImages])
     }
+
+
     const deleteImage = (index: number) => {
         const newArr = [...images]
         newArr.splice(index, 1)
@@ -149,7 +156,6 @@ const StatusModal = () => {
         if (tracks) tracks.stop()
 
     }
-
     useEffect(() => {
         if (edit) {
             setContent(edit.content)
@@ -160,6 +166,8 @@ const StatusModal = () => {
         dispatch(setModal(false))
         dispatch(setEdit(null))
     }
+
+
 
 
     return (
@@ -179,16 +187,33 @@ const StatusModal = () => {
 
                     </textarea>
                     <div className={s.imageBox}>
-                        {images.map((img: any, index: number) => {
+
+                        {images?.map((img: any, index: number) => {
                             return (
                                 <div key={index}>
-                                    <img
-                                        src={img.camera
-                                            ? img.camera
-                                            : typeof img === "object" ? URL.createObjectURL(img) : img
-                                        }
-                                        alt=""
-                                    />
+                                    {
+                                        img?.camera
+                                            ? imageShow(img.camera)
+                                            : img?.url
+                                                ? <>
+                                                    {
+                                                        img.url?.match(/video/i)
+                                                            ? videoShow(img?.url)
+                                                            : videoShow(img?.url)
+                                                    }
+                                                </>
+                                                :
+                                                (
+                                                    <>
+                                                        {
+                                                            img?.type?.match(/video/i)
+                                                                ? videoShow(URL.createObjectURL(img))
+                                                                : imageShow(typeof img === "object" ? URL.createObjectURL(img) : img)
+                                                        }
+                                                    </>
+                                                )
+
+                                    }
                                     <span role="button" onClick={() => deleteImage(index)}>
                                         <IoMdClose/>
                                     </span>
@@ -233,7 +258,7 @@ const StatusModal = () => {
                                         name="file"
                                         id="file"
                                         multiple
-                                        accept="image/*, video/*"
+                                        accept="image/*,video/*"
                                         hidden
                                         onChange={handleChangeImage}
                                     />
@@ -243,12 +268,19 @@ const StatusModal = () => {
 
                     </div>
                 </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? (
-                        <img src={IMAGES.spinner} alt="spinner"/>
-                    ) : "Post"}
-                </button>
+
+                <div>
+                    <div>
+                        <Icons setContent={setContent}/>
+                    </div>
+                    <button type="submit" disabled={loading}>
+                        {loading ? (
+                            <img src={IMAGES.spinner} alt="spinner"/>
+                        ) : "Post"}
+                    </button>
+                </div>
             </form>
+
         </div>
     );
 };

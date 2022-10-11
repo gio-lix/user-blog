@@ -6,6 +6,7 @@ import {setComments} from "../../../redux/slices/postsSlice";
 import axios from "axios";
 import clsx from "clsx";
 import {fetchDataApi} from "../../../api/postDataApi";
+import Icons from "../../Icons";
 
 interface Props {
     post: PostsState
@@ -85,6 +86,9 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
         <form onSubmit={handleSubmit} className={clsx(s.input_comment,
             theme === "light" && s.input_dark
             )}>
+            <div>
+                <Icons className={s.comment_icon} setContent={setContent}/>
+            </div>
             {children}
             <input
                 type="text"
@@ -93,7 +97,9 @@ const InputComments: FC<Props> = ({post, children, setOnReply, onReply}) => {
                 className={clsx(!!onReply ? s.input_comment_onReply : null)}
                 onChange={(e) => setContent(e.target.value)}
             />
+
             <button type="submit">Post</button>
+
         </form>
     );
 };

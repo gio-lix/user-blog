@@ -27,6 +27,9 @@ const CartBody: FC<Props> = ({post}) => {
         setImageIndex(prev => prev - 1)
     }
 
+
+
+
     return (
         <div className={s.body}>
             <div className={s.body_content}>
@@ -42,29 +45,50 @@ const CartBody: FC<Props> = ({post}) => {
                     </span>
                 }
             </div>
+
             <div className={s.body_img}>
                 {post?.images.length > 1 ? (
                     <div className={s.body_img_box}>
-                        <figure>
-                            <img src={post.images[imageIndex]} alt="img"/>
+                        <figure className={clsx(!post.images[imageIndex]?.match(/video/i) && clsx(s.ji))}>
+                            {
+                                post.images[imageIndex]?.match(/video/i)
+                                    ? (
+                                        <video controls>
+                                            <source
+                                                src={post.images[imageIndex]}
+                                            />
+                                        </video>
+                                    )
+                                    : (
+                                        <img src={post.images[imageIndex]} alt="img"/>
+                                    )
+                            }
                             <span onClick={left} className={s.left_button}><AiOutlineLeft/></span>
                             <span onClick={right} className={s.right_button}><AiOutlineRight/></span>
-                            <div className={s.dash}>
-                                {post.images.map((el, index: number) => (
-                                    <span
-                                        className={clsx(index === imageIndex && s.white)}
-                                        onClick={() => setImageIndex(index)}
-                                        key={index}
-                                    >
-                                <BsDashLg/>
-                                </span>
-                                ))}
-                            </div>
+                            {!post.images[imageIndex]?.match(/video/i) && (
+                                <div className={s.dash}>
+                                    {post.images.map((el, index: number) => (
+                                        <span
+                                            className={clsx(index === imageIndex && s.white)}
+                                            onClick={() => setImageIndex(index)}
+                                            key={index}
+                                        >
+                                            <BsDashLg/>
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </figure>
                     </div>
                 ) : (
                     <>
-                        <img src={post?.images[0]} alt=""/>
+                        {
+                            post.images[imageIndex]?.match(/video/i)
+                                ? <video controls>
+                                    <source src={post.images[imageIndex]}/>
+                                </video>
+                                : <img src={post?.images[0]} alt=""/>
+                        }
                     </>
                 )}
             </div>
