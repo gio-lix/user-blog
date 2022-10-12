@@ -7,6 +7,7 @@ import {AiOutlineLeft, AiOutlineRight} from "react-icons/ai"
 import {BsDashLg} from "react-icons/bs"
 
 import {PostsState} from "../../../../typing";
+import {imageShow} from "../../../../utils/mediaShow";
 
 interface Props {
     post: PostsState
@@ -49,18 +50,21 @@ const CartBody: FC<Props> = ({post}) => {
             <div className={s.body_img}>
                 {post?.images.length > 1 ? (
                     <div className={s.body_img_box}>
-                        <figure className={clsx(!post.images[imageIndex]?.match(/video/i) && clsx(s.ji))}>
+                        <figure className={clsx(!post?.images[imageIndex]?.match(/video/i) && clsx(s.ji))}>
                             {
                                 post.images[imageIndex]?.match(/video/i)
                                     ? (
                                         <video controls>
                                             <source
-                                                src={post.images[imageIndex]}
+                                                src={post?.images[imageIndex]}
                                             />
                                         </video>
                                     )
                                     : (
-                                        <img src={post.images[imageIndex]} alt="img"/>
+
+                                        imageShow(post?.images[imageIndex])
+
+                                // <img src={post.images[imageIndex]} alt="img"/>
                                     )
                             }
                             <span onClick={left} className={s.left_button}><AiOutlineLeft/></span>
@@ -83,9 +87,9 @@ const CartBody: FC<Props> = ({post}) => {
                 ) : (
                     <>
                         {
-                            post.images[imageIndex]?.match(/video/i)
+                            post?.images[imageIndex]?.match(/video/i)
                                 ? <video controls>
-                                    <source src={post.images[imageIndex]}/>
+                                    <source src={post?.images[imageIndex]}/>
                                 </video>
                                 : <img src={post?.images[0]} alt=""/>
                         }

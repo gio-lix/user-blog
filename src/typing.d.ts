@@ -1,3 +1,25 @@
+export interface ChatUsersState {
+    _id: string
+    fullname: string
+    username: string
+    avatar: string
+    text: string
+    media: string[]
+}
+
+
+
+export interface ChatDataState {
+    _id?: string
+    conversation?: string
+    sender: string
+    text: string
+    media: string[]
+    recipient: UserState | string
+    createdAt: string
+    updatedAt?: string
+}
+
 export interface ValidState {
     password?: string,
     confirmPassword?: string,
@@ -8,8 +30,8 @@ export interface ValidState {
 
 export interface UserState {
     _id: string
-    address: string
     avatar: string
+    address: string
     email: string
     followers: string[]
     following: string[]
@@ -35,17 +57,17 @@ export interface CommentState {
 
 export interface PostsState {
     _id: string
-    comments: CommentState[],
     content: string,
     images: string[]
     likes: string[],
-    createdAt: Date
+    comments: CommentState[],
     user: {
         _id: string
         avatar: string
         fullname: string
         username: string
     }
+    createdAt: Date
 }
 
 export interface NotifyPostsState {

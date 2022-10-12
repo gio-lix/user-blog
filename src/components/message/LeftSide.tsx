@@ -1,4 +1,4 @@
-import React, {SyntheticEvent, useState} from 'react';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom"
 import {GoPrimitiveDot} from "react-icons/go"
 import clsx from "clsx";
@@ -6,9 +6,9 @@ import clsx from "clsx";
 import s from "./Message.module.scss"
 
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
-import {addMessageUsers} from "../../redux/slices/messageUseresSlices";
+import {addMessageUsers, setConversation} from "../../redux/slices/messageUseresSlices";
 import {fetchDataApi} from "../../api/postDataApi";
-import {UserState} from "../../typing";
+import {ChatDataState, ChatUsersState} from "../../typing";
 import UserCard from "../userCard";
 
 
@@ -17,12 +17,11 @@ const LeftSide = () => {
     const navigate = useNavigate()
     const {id} = useParams()
 
-    const {token} = useAppSelector((state: RootState) => state.auth)
+    const {token, user: author} = useAppSelector((state: RootState) => state.auth)
     const {users} = useAppSelector((state: RootState) => state.messageUsers)
 
     const [search, setSearch] = useState("")
     const [searchUsers, setSearchUsers] = useState([])
-
 
     const onHandleSearch = async (e: SyntheticEvent) => {
         e.preventDefault()
@@ -31,17 +30,37 @@ const LeftSide = () => {
     }
 
 
-    const onHandlerAddUser = (user: UserState) => {
+    const onHandlerAddUser = (user: ChatUsersState) => {
         dispatch(addMessageUsers({user}))
         setSearch("")
         setSearchUsers([])
         navigate(`/message/${user._id}`)
     }
 
-    const isActive = (user: any) => {
+    const isActive = (user: ChatUsersState) => {
         if (id === user._id) return s.leftSide_active_icon
         return ""
     }
+
+
+    useEffect(() => {
+        fetchDataApi.getData('conversation', token!)
+            .then(({success}) => {
+                success.conversation.forEach((item: any) => {
+                    item.recipients.forEach((el: any) => {
+                        if (el._id !== author._id) {
+                            dispatch(setConversation(
+                                {
+                                    result: success.result,
+                                    data: {...el, text: item.text, media: item.media}!
+                                }))
+                        }
+                    })
+                })
+            })
+    }, [id])
+
+
 
     return (
         <>
@@ -61,17 +80,17 @@ const LeftSide = () => {
 
             {searchUsers?.length !== 0 ? (
                 <>
-                    {searchUsers?.map((user: UserState, index: number) => (
+                    {searchUsers?.map((user: ChatUsersState, index: number) => (
                         <div key={`${user._id}_${index}`} onClick={() => onHandlerAddUser(user)}>
-                            <UserCard className={s.users_styles}  {...user} />
+                            <UserCard className={s.users_styles}  {...user as any} />
                         </div>
                     ))}
                 </>
             ) : (
                 <>
-                    {users?.map((user: UserState) => (
+                    {users?.map((user: ChatUsersState) => (
                         <div key={user._id} onClick={() => onHandlerAddUser(user)}>
-                            <UserCard {...user} className={clsx(s.users_styles, s.leftSide_icon, isActive(user))}>
+                            <UserCard {...user as any} className={clsx(s.users_styles, s.leftSide_icon, isActive(user))}>
                                 <span role="icon"><GoPrimitiveDot/></span>
                             </UserCard>
                         </div>

@@ -2,28 +2,48 @@ import React, {FC} from 'react';
 
 import s from "./Message.module.scss"
 
-import {UserState} from "../../typing";
+import {ChatUsersState, UserState} from "../../typing";
+import {imageShow, videoShow} from "../../utils/mediaShow";
 
+
+interface MessageState {
+    createAt: string
+    media: string[]
+    recipients: string
+    sender: string
+    text: string
+}
 
 interface Props {
-    user: UserState
+    user: UserState | ChatUsersState
+    msg: MessageState
 }
 
 
-const MessageDisplay: FC<Props> = ({user}) => {
+const MessageDisplay: FC<Props> = ({user, msg}) => {
+
     return (
         <>
             <div className={s.chat_title}>
                 <img src={user?.avatar} alt="avatar"/>
                 <span>{user?.username}</span>
             </div>
+            <div className={s.msgDisplay_img_box}>
+                {msg.media.map((img, index: number) => (
+                    <div className={s.msgDisplay_img} key={index}>
+                        {
+                            img.match(/video/i)
+                                ? videoShow(img)
+                                : imageShow(img)
+                        }
+                    </div>
+                ))}
+            </div>
             <div className={s.chat_text}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci cupiditate deserunt hic ipsa natus
-                perferendis quam quos reprehenderit similique tempore! Aliquid cum cumque nam nihil reiciendis. Commodi
-                excepturi omnis velit.
+                {msg.text}
             </div>
             <div className={s.chat_time}>
-                April 2021
+                {new Date(msg.createAt).toLocaleString()}
             </div>
         </>
     );

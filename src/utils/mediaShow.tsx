@@ -3,7 +3,7 @@ import React from "react";
 export const imageShow = (src: any) => {
     return (
         <img
-            style={{objectFit: "cover"}}
+            style={{width: "100%", height: "100%", objectFit: "cover"}}
             src={src}
             alt=""
         />

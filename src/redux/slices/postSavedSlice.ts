@@ -3,11 +3,12 @@ import axios from "axios";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
 import {setNotify} from "./notifySlices";
+import {PostsState} from "../../typing";
 
 
 const initialState = {
     status: "loaded",
-    posts: [] as any | [],
+    posts: [] as PostsState[] | [],
     result: 0,
     page: 2
 }
@@ -45,7 +46,7 @@ const postSavedSlice = createSlice({
             .addCase(getSavedPostApi.pending, (state: State) => {
                 state.status = "loading"
             })
-            .addCase(getSavedPostApi.fulfilled, (state: State, {payload}: any) => {
+            .addCase(getSavedPostApi.fulfilled, (state: State, {payload}:any) => {
                 state.status = "loaded"
                 state.posts = payload.savedPosts
                 state.result = payload.result
@@ -55,3 +56,4 @@ const postSavedSlice = createSlice({
 })
 export const {setAddSavedPosts} = postSavedSlice.actions
 export const savedPostsReducer = postSavedSlice.reducer
+
