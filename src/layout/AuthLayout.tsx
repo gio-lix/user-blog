@@ -8,6 +8,10 @@ import {setSocket} from "../redux/slices/socketSlice";
 
 import StatusModal from "../components/statusModal";
 import Header from "../components/header/header";
+import CallModel from "../components/message/CallModel";
+import Peer from "peerjs";
+import {setPeer} from "../redux/slices/callSlice";
+import SocketClient from "../SocketClient";
 
 
 const AuthLayout = () => {
@@ -18,6 +22,7 @@ const AuthLayout = () => {
 
     const {token} = useAppSelector((state: RootState) => state.auth)
     const {modal} = useAppSelector((state: RootState) => state.posts)
+    const {call} = useAppSelector((state: RootState) => state.call)
 
 
     useEffect(() => {
@@ -37,12 +42,20 @@ const AuthLayout = () => {
         }
     }, [dispatch])
 
+    useEffect(() => {
+        // @ts-ignore
+        const newPeer = new Peer(undefined, {
+            host: "/", port: 3001
+        })
+        dispatch(setPeer(newPeer))
+    },[])
 
     return (
         <section className="main-container">
             {token && <Header/>}
             {modal && <StatusModal/>}
-
+            {call && <CallModel />}
+            {token && <SocketClient/>}
             <div style={{height: "70px", width: "100%"}}></div>
             <Outlet/>
         </section>

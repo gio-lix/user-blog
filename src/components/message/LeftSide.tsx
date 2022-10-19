@@ -8,7 +8,7 @@ import s from "./Message.module.scss"
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {addMessageUsers, setConversation} from "../../redux/slices/messageUseresSlices";
 import {fetchDataApi} from "../../api/postDataApi";
-import {ChatDataState, ChatUsersState} from "../../typing";
+import { ChatUsersState} from "../../typing";
 import UserCard from "../userCard";
 
 
@@ -17,8 +17,17 @@ const LeftSide = () => {
     const navigate = useNavigate()
     const {id} = useParams()
 
-    const {token, user: author} = useAppSelector((state: RootState) => state.auth)
-    const {users} = useAppSelector((state: RootState) => state.messageUsers)
+    const {socket} = useAppSelector((state: RootState) => state.socket)
+    const {token, user: auth} = useAppSelector((state: RootState) => state.auth)
+    const {users, firstLoad} = useAppSelector((state: RootState) => state.messageUsers)
+    const {online} = useAppSelector((state: RootState) => state.notify)
+    const {theme} = useAppSelector((state: RootState) => state.notify)
+
+
+
+    useEffect(() => {
+        socket.emit("checkUserOnline", auth)
+    }, [socket,auth])
 
     const [search, setSearch] = useState("")
     const [searchUsers, setSearchUsers] = useState([])
@@ -26,45 +35,52 @@ const LeftSide = () => {
     const onHandleSearch = async (e: SyntheticEvent) => {
         e.preventDefault()
         const {success} = await fetchDataApi.getData(`search?username=${search}`, token!)
-        if (success) setSearchUsers(success.users)
+        const searchUsers = success.users.filter((e: any) => e._id !== auth._id)
+        if (success) setSearchUsers(searchUsers)
     }
-
-
     const onHandlerAddUser = (user: ChatUsersState) => {
         dispatch(addMessageUsers({user}))
+        navigate(`/message/${user._id}`)
         setSearch("")
         setSearchUsers([])
-        navigate(`/message/${user._id}`)
     }
-
     const isActive = (user: ChatUsersState) => {
-        if (id === user._id) return s.leftSide_active_icon
+        if ( online.includes(user._id)) return s.leftSide_active_icon
         return ""
     }
 
 
     useEffect(() => {
-        fetchDataApi.getData('conversation', token!)
-            .then(({success}) => {
-                success.conversation.forEach((item: any) => {
-                    item.recipients.forEach((el: any) => {
-                        if (el._id !== author._id) {
-                            dispatch(setConversation(
-                                {
-                                    result: success.result,
-                                    data: {...el, text: item.text, media: item.media}!
-                                }))
-                        }
+        let mounded = true
+        if (mounded) {
+            fetchDataApi.getData('conversation', token!)
+                .then(({success}) => {
+                    success.conversation.forEach((item: any) => {
+                        item.recipients.forEach((cv: any) => {
+                            if (cv._id !== auth._id) {
+                                dispatch(setConversation(
+                                    {
+                                        result: success.result,
+                                        data: {...cv, text: item.text, media: item.media}!
+                                    }))
+                            }
+                        })
                     })
                 })
-            })
-    }, [id])
+        }
+
+        return () => {mounded = false}
+
+    }, [firstLoad, id])
+
 
 
 
     return (
         <>
-            <form onSubmit={onHandleSearch} className={s.leftSide_form}
+            <form onSubmit={onHandleSearch} className={clsx(s.leftSide_form,
+                theme === "light" && s.left_side_theme
+                )}
             >
                 <input
                     type="text"
@@ -88,8 +104,8 @@ const LeftSide = () => {
                 </>
             ) : (
                 <>
-                    {users?.map((user: ChatUsersState) => (
-                        <div key={user._id} onClick={() => onHandlerAddUser(user)}>
+                    {users?.map((user: ChatUsersState, index: number) => (
+                        <div key={`${user._id}_${index}`} onClick={() => onHandlerAddUser(user)}>
                             <UserCard {...user as any} className={clsx(s.users_styles, s.leftSide_icon, isActive(user))}>
                                 <span role="icon"><GoPrimitiveDot/></span>
                             </UserCard>

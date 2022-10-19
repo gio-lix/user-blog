@@ -9,6 +9,7 @@ import {savedPostsReducer} from "./slices/postSavedSlice";
 import {socketReducer} from "./slices/socketSlice";
 import {postNotifySliceReducer} from "./slices/postNotifySlice";
 import {messageUsersReducers} from "./slices/messageUseresSlices";
+import {callReducer} from "./slices/callSlice";
 
 
 const rootReducer = combineReducers({
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
     notify: notifyReducer,
     socket: socketReducer,
     postNotify: postNotifySliceReducer,
-    messageUsers: messageUsersReducers
+    messageUsers: messageUsersReducers,
+    call: callReducer
 })
 
 const store = configureStore({

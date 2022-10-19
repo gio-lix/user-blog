@@ -7,7 +7,7 @@ import {ChatDataState, ChatUsersState} from "../../typing";
 
 
 const initialState = {
-    users: [] as ChatUsersState[],
+    users: [] as any,
     resultUsers: 0,
     data: [] as ChatDataState[],
     resultData: 0,
@@ -35,6 +35,8 @@ const messageUsersSlices = createSlice({
             )
         },
         setConversation: (state: State, {payload}: PayloadAction<{result: number, data: ChatUsersState}>) => {
+            // let us = state.users.filter(user => user._id !== payload.data._id)
+            // state.users = [...us ,payload.data]
             state.users = [payload.data]
             state.resultUsers = payload.result
             state.firstLoad = true
@@ -42,11 +44,31 @@ const messageUsersSlices = createSlice({
         addMessageDataApi: (state: State, {payload}: PayloadAction<{result: number, messages: ChatDataState[]}>) => {
             state.resultData = payload.result
             state.data = payload.messages.reverse()
+        },
+        setMoreMessages: (state: State,{payload}: any) =>  {
+            state.resultData = payload.result
+            state.data.unshift(...payload.messages)
+        },
+        setDeleteMessage: (state: State,{payload}: any) => {
+            state.data = state.data.filter(el => el._id !== payload._id)
+        },
+        setDeleteConversation:(state: State,{payload}: any) => {
+            state.users = state.users.filter((user: any) => user._id !== payload)
+            state.data = state.data = []
         }
     }
+
 })
 
 
-export const {addMessageUsers, addMessageData, addMessageDataApi, setConversation} = messageUsersSlices.actions
+export const {
+    addMessageUsers,
+    addMessageData,
+    addMessageDataApi,
+    setConversation,
+    setMoreMessages,
+    setDeleteMessage,
+    setDeleteConversation
+} = messageUsersSlices.actions
 
 export const messageUsersReducers = messageUsersSlices.reducer

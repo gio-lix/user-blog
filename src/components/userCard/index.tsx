@@ -34,6 +34,8 @@ const UserCard: FC<Props> = ({
     const {theme} = useAppSelector((state: RootState) => state.notify)
 
 
+
+
     return (
         <section className={clsx(s.user, className ? className : "", theme === "light" && s.user_theme)}>
             <div>

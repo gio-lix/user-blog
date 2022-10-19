@@ -5,6 +5,8 @@ import {setCommentRemove, setComments, setLikes, setUnLikes} from "./redux/slice
 import {setDeletePostNotify, setPostNotify} from "./redux/slices/postNotifySlice";
 
 import audioVoice from "./audio/alert.mp3"
+import {addMessageData} from "./redux/slices/messageUseresSlices";
+import {setOffline, setOnline} from "./redux/slices/notifySlices";
 
 const SocketServer = () => {
     const dispatch = useAppDispatch()
@@ -12,6 +14,7 @@ const SocketServer = () => {
     const {socket} = useAppSelector((state: RootState) => state.socket)
     const {user} = useAppSelector((state: RootState) => state.auth)
     const {sound} = useAppSelector((state: RootState) => state.postNotify)
+    const {online} = useAppSelector((state: RootState) => state.notify)
 
     const audioRef = useRef<any>()
 
@@ -29,10 +32,9 @@ const SocketServer = () => {
         }
     }
 
-
     useEffect(() => {
-        socket.emit("joinUser", user._id)
-    }, [socket, user._id])
+        socket.emit("joinUser", user)
+    }, [socket, user._id, user])
 
     useEffect(() => {
         socket.on("likeToClient", (newPost: any) => {
@@ -65,6 +67,12 @@ const SocketServer = () => {
         return () => socket.off("removeCommentToClient")
     }, [socket, dispatch])
 
+    useEffect(() => {
+        socket.on("addMessageToClient", (message: any) => {
+            dispatch(addMessageData(message))
+        })
+        return () => socket.off("addMessageToClient")
+    }, [socket, dispatch])
 
     useEffect(() => {
         socket.on("notifyToClient", (notify: any) => {
@@ -87,12 +95,47 @@ const SocketServer = () => {
         return () => socket.off("removeNotifyToClient")
     }, [socket, dispatch])
 
+    useEffect(() => {
+        socket.on("checkUserOnlineToMe", (data: any) => {
+            data.forEach((item: any) => {
+                if (!online.includes(item.id)) {
+                    dispatch(setOnline(item.id))
+                }
+            })
+        })
+        return () => socket.off("checkUserOnlineToMe")
+    }, [socket, dispatch])
+
+    useEffect(() => {
+        socket.on("checkUserOnlineToClient", (data: any) => {
+            data.forEach((item: any) => {
+                if (!online.includes(item.id)) {
+                    dispatch(setOnline(item.id))
+                }
+            })
+        })
+        return () => socket.off("checkUserOnlineToClient")
+    }, [socket, online])
+
+
+    useEffect(() => {
+        socket.on("checkUserOffline", (data: any) => {
+            dispatch(setOffline(data))
+        })
+        return () => socket.off("checkUserOffline")
+    }, [socket, dispatch])
+
+
+    useEffect(() => {
+        socket.on("callUserToClient", (data: any) => {
+            console.log("data - ", data)
+        })
+        return () => socket.off("callUserToClient")
+    },[socket, dispatch])
 
     return (
         <>
-            <audio controls ref={audioRef}
-                   style={{display: "none"}}
-            >
+            <audio controls ref={audioRef} style={{display: "none"}}>
                 <source src={audioVoice} type="audio/mp3"/>
             </audio>
         </>

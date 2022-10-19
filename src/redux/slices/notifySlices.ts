@@ -7,7 +7,8 @@ const initialState = {
     notify: {
         success: [],
         error: [],
-    }
+    },
+    online: [] as any
 }
 
 type State = typeof initialState
@@ -29,6 +30,14 @@ const notifySlices = createSlice({
         },
         setTheme: (state: State, action: PayloadAction<any>) => {
             state.theme = action.payload
+        },
+        setOnline: (state: State, {payload}: PayloadAction<any>) => {
+            if (state.online.includes(payload)) return
+            state.online.push(payload)
+        },
+        setOffline: (state: State, {payload}: PayloadAction<any>) => {
+            console.log("payload = ", payload)
+            state.online = state.online.filter((e: any) => e._id !== payload)
         }
     }
 })
@@ -36,7 +45,9 @@ const notifySlices = createSlice({
 export const {
     setNotify,
     setNotifyReset,
-    setTheme
+    setTheme,
+    setOnline,
+    setOffline
 } = notifySlices.actions
 
 export const notifyReducer = notifySlices.reducer
